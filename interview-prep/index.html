@@ -287,10 +287,39 @@ const RAW = [
  'Grounding via RAG with citations (forcing answers to be traceable to real source text) beats just "asking it to be careful." LLM-as-judge means using a separate model call to score/rate another model\'s output against a rubric — for scalable automated evaluation instead of manual review alone.', 10],
 ['sysdesign','Mobile API design: why does idempotency matter more on mobile than on a typical web backend?',
  'Mobile networks drop mid-request constantly, and the client often cannot tell whether a request actually succeeded server-side before the drop — without an idempotency key, a client\'s automatic retry can double-create or double-charge.', 10],
+
+// --- Blocks 11-12: appended (not inserted) so existing card IDs/progress never shift.
+// Despite the numbering, treat these as Tier-1 — MVVM/MVI, Flows, structured
+// concurrency and state management are asked in nearly every Android/Kotlin loop.
+['android','MVVM vs MVI — what actually differs in how data flows, and when would you pick MVI over MVVM?',
+ 'MVVM: View observes multiple independent streams (StateFlow/LiveData) from the ViewModel; state updates can come from many methods. MVI: View renders one single immutable UiState; every user action becomes an Intent that\'s reduced into a new state — strictly unidirectional. Pick MVI when you need predictable, testable, time-travel-debuggable state (complex screens with many interacting fields); MVVM is less boilerplate and enough for most simpler screens.', 11],
+['android','Where does the Repository pattern sit in MVVM, and why observe the local DB instead of the network response directly?',
+ 'ViewModel calls the Repository; the Repository is the single source of truth abstracting network + local DB. The common "offline-first" shape: network fetch writes to Room, and the UI observes a Flow from Room — so the UI updates consistently whether data came from cache or a fresh fetch, and works offline for free.', 11],
+['android','Why use <code>viewModelScope</code>/<code>lifecycleScope</code> instead of <code>GlobalScope</code> for launching coroutines?',
+ '<code>viewModelScope</code> auto-cancels when the ViewModel is cleared; <code>lifecycleScope</code> auto-cancels with its lifecycle owner. <code>GlobalScope</code> is tied to nothing — it survives the screen that started it, leaking work and wasting resources (and can update UI that no longer exists). Always launch from a scope whose lifetime matches the work\'s purpose.', 11],
+['kotlin','How do you run two suspend calls concurrently instead of sequentially, and why does it matter?',
+ 'Two sequential <code>await</code>ed suspend calls run one after another (total time = sum of both). Wrapping each in its own <code>async { }</code> first, then calling <code>await()</code> on both (or <code>awaitAll()</code>), starts them concurrently — total time ≈ the slower of the two. Inside <code>coroutineScope { }</code> so structured concurrency still applies (both cancel together on failure).', 11],
+['android','Stateless vs stateful composables — who should own the state, and why does it matter?',
+ 'A stateful composable holds its own <code>remember { mutableStateOf(...) } </code> internally — simple, but not reusable/testable. A stateless composable takes <code>value</code> + <code>onValueChange</code> as parameters and owns nothing (state hoisting) — the caller (often the ViewModel via a UiState) owns the single source of truth, which is what makes the composable reusable, previewable, and easy to test in isolation.', 11],
+['android','Why is <code>StateFlow</code> now generally preferred over <code>LiveData</code> for ViewModel state?',
+ '<code>StateFlow</code> is a plain Kotlin construct — works and is testable outside Android entirely, unlike LiveData. It composes with the rest of the Flow operator toolkit (<code>map</code>, <code>combine</code>, <code>debounce</code>...), always has a current value (like LiveData), and is conflated. LiveData is still lifecycle-aware out of the box, but StateFlow + <code>repeatOnLifecycle</code> now covers that with more flexibility.', 11],
+
+['kotlin','Flow vs StateFlow vs SharedFlow — what is cold vs hot, and when do you use each?',
+ '<code>Flow</code> is cold: the producer block runs fresh for every collector, only when collected. <code>StateFlow</code> is hot, always holds a current value, conflated (new collectors immediately get the latest value) — the default choice for observable UI state. <code>SharedFlow</code> is hot with no required default value and configurable replay/buffer — the right tool for one-off events (navigation, snackbars, toasts) that shouldn\'t replay on every config change unless you want them to.', 12],
+['android','What bug does <code>repeatOnLifecycle(Lifecycle.State.STARTED)</code> prevent when collecting a Flow in an Activity/Fragment?',
+ 'Collecting a Flow directly in <code>onCreate</code>/<code>onViewCreated</code> keeps collecting even while the screen is stopped (wasting work, and risking a crash if it touches views after they\'re gone). <code>repeatOnLifecycle(STARTED)</code> automatically cancels collection when the lifecycle drops below STARTED and restarts it when it comes back — the current recommended replacement for the older, error-prone manual <code>launchWhenStarted</code>.', 12],
+['kotlin','object vs companion object — what are the singleton semantics, and when does each get initialized?',
+ '<code>object Foo</code> declares a standalone singleton, lazily created on first access to any of its members. A <code>companion object</code> is a singleton scoped inside a class (roughly Java\'s "static" equivalent), also lazily initialized on first access to the class or its companion — used for factory functions and constants tied conceptually to that class.', 12],
+['kotlin','enum class vs sealed class vs a plain value class — how do you pick the right one?',
+ '<code>enum class</code>: a small, fixed set of named constants with no per-case data shape differences (Direction.NORTH/SOUTH). <code>sealed class</code>: a fixed set of subclasses that can each carry different data/shape (Result.Success(data) vs Result.Error(msg)) — use when cases aren\'t structurally uniform. <code>value class</code> (<code>@JvmInline</code>): a zero-overhead typed wrapper around a single value (UserId(String)) for type safety without allocation — not for representing a set of cases at all.', 12],
+['kotlin','How do you handle exceptions inside coroutines — <code>try/catch</code>, <code>CoroutineExceptionHandler</code>, or <code>supervisorScope</code>?',
+ '<code>try/catch</code> around a suspend call works exactly like normal code for expected, recoverable failures. <code>CoroutineExceptionHandler</code> is a last-resort, top-level catch-all installed on a root <code>launch</code> (not <code>async</code> — its exception is delivered via <code>await()</code> instead). <code>supervisorScope</code> changes the propagation rule itself: a child\'s failure doesn\'t cancel its siblings — use it when independent children (e.g. parallel fetches) shouldn\'t all die because one failed.', 12],
+['android','SavedStateHandle vs rememberSaveable vs a plain ViewModel field — which state survives what?',
+ 'A plain ViewModel field survives rotation only (ViewModel is destroyed on process death/real finish). <code>rememberSaveable</code> survives rotation AND process death, but only lives as long as that composable is in composition — it\'s UI-layer, not shared with the ViewModel. <code>SavedStateHandle</code> survives both rotation and process death, and lives in the ViewModel — the right place for state the ViewModel itself needs to restore (e.g. a search query, a scroll position driving a network call).', 12],
 ];
 
 const CARDS = RAW.map((r,i)=>({id:`c${i}`, t:r[0], q:r[1], a:r[2], block:r[3]}));
-const NUM_BLOCKS = 10;
+const NUM_BLOCKS = 12;
 const BLOCK_META = {
   1:"Tier 1 — the single highest-yield question per domain. If you only have one 2-hour slot before an interview, do this block.",
   2:"Tier 1, continued — still core fundamentals; rounds out the basics across System Design and Go alongside Android/Kotlin/Java/DSA.",
@@ -302,6 +331,8 @@ const BLOCK_META = {
   8:"Senior-leaning, continued — data-structure internals and the modern AI-stack architecture (MCP).",
   9:"Polish — the details that turn a good answer into an obviously-experienced one.",
   10:"Polish, continued — edge cases and nuance that come up in the last 20 minutes of a strong interview.",
+  11:"Added on request — Android architecture (MVVM/MVI) &amp; state ownership. Numbered last only because it was appended after the fact; treat it as Tier-1, not optional.",
+  12:"Added on request, continued — Flows (cold/hot), coroutine exception handling, and Kotlin's object/enum/value-class toolkit. Same priority note as Block 11.",
 };
 
 /* ============ STORAGE ============ */
