@@ -7,15 +7,14 @@
 <style>
   :root{
     --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
-    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff;
-    --high:#ff6b6b; --med:#ffb84d; --done:#3ddc84;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff; --done:#3ddc84;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
   header{padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,17,21,.95);backdrop-filter:blur(6px);z-index:20;}
   header h1{margin:0 0 4px;font-size:1.4rem;}
   header p{margin:0;color:var(--muted);font-size:.9rem;}
-  .wrap{max-width:1100px;margin:0 auto;padding:20px 16px 80px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:20px 16px 80px;}
   .panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:18px;}
   .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
   .btn{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:9px;cursor:pointer;font-size:.9rem;font-weight:600;transition:.15s;}
@@ -24,42 +23,51 @@
   .btn.primary:hover{filter:brightness(1.1);color:#fff;}
   .btn.ghost{background:transparent;}
   .btn.small{padding:5px 10px;font-size:.78rem;}
-  .btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
   .tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--border);}
   .tab{padding:10px 14px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;font-weight:600;font-size:.9rem;}
   .tab.active{color:var(--text);border-color:var(--accent);}
   .muted{color:var(--muted);}
   .hidden{display:none !important;}
   .badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:.7rem;font-weight:700;letter-spacing:.02em;}
-  .badge.high{background:rgba(255,107,107,.15);color:var(--high);}
-  .badge.med{background:rgba(255,184,77,.15);color:var(--med);}
-  .badge.done{background:rgba(61,220,132,.15);color:var(--done);}
   .badge.topic{color:#0c0d10;font-weight:700;}
+  .badge.count{background:var(--panel2);color:var(--muted);border:1px solid var(--border);}
+  .badge.count.full{background:rgba(61,220,132,.15);color:var(--done);border-color:transparent;}
+
+  /* block chip grid */
+  .block-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-bottom:4px;}
+  .block-chip{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;}
+  .block-chip:hover{border-color:var(--accent);}
+  .block-chip.active{border-color:var(--accent);background:rgba(91,140,255,.12);}
+  .block-chip .num{font-weight:800;font-size:1.05rem;}
+  .block-chip .cnt{font-size:.68rem;color:var(--muted);margin-top:2px;}
+  .block-chip.full .cnt{color:var(--done);}
+  .block-chip.full .num::after{content:" ✓";color:var(--done);}
+
+  .block-header{margin:18px 0 12px;}
+  .block-header h2{margin:0 0 4px;font-size:1.15rem;}
+  .block-header .rationale{color:var(--muted);font-size:.85rem;line-height:1.4;}
+
   .card{border:1px solid var(--border);border-radius:12px;background:var(--panel2);margin-bottom:10px;overflow:hidden;}
   .card.completed{opacity:.55;}
-  .card-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;}
-  .card-head input[type=checkbox]{width:19px;height:19px;accent-color:var(--done);flex-shrink:0;cursor:pointer;}
-  .card-title{flex:1;font-weight:600;font-size:.96rem;}
-  .card-title.strike{text-decoration:line-through;color:var(--muted);}
-  .chev{color:var(--muted);transition:.2s;font-size:.8rem;}
-  .card-body{padding:0 16px 16px 45px;font-size:.88rem;line-height:1.55;color:#cbd0da;display:none;}
+  .card-head{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;cursor:pointer;}
+  .card-head input[type=checkbox]{width:19px;height:19px;accent-color:var(--done);flex-shrink:0;cursor:pointer;margin-top:2px;}
+  .card-q{flex:1;font-weight:600;font-size:.95rem;line-height:1.4;}
+  .card-q.strike{text-decoration:line-through;color:var(--muted);}
+  .card-topic-line{margin-bottom:5px;}
+  .chev{color:var(--muted);font-size:.8rem;flex-shrink:0;margin-top:3px;}
+  .card-body{padding:0 16px 14px 45px;font-size:.87rem;line-height:1.55;color:#cbd0da;display:none;}
   .card-body.open{display:block;}
-  .card-body h4{margin:14px 0 4px;color:var(--text);font-size:.85rem;}
-  .card-body ul{margin:4px 0 10px;padding-left:20px;}
-  .card-body li{margin-bottom:4px;}
-  .card-body code{background:#11141a;border:1px solid var(--border);padding:1px 5px;border-radius:5px;font-size:.82em;color:#9fd3ff;}
-  .card-body pre{background:#11141a;border:1px solid var(--border);border-radius:8px;padding:10px 12px;overflow-x:auto;margin:6px 0 12px;}
-  .card-body pre code{border:none;padding:0;background:none;color:#c7d3e0;}
-  .meta{font-size:.72rem;color:var(--muted);margin-left:auto;white-space:nowrap;}
+  .card-body code{background:#11141a;border:1px solid var(--border);padding:1px 5px;border-radius:5px;font-size:.85em;color:#9fd3ff;}
+
+  .next-block-cta{margin-top:12px;padding:14px;border:1px dashed var(--done);border-radius:10px;background:rgba(61,220,132,.08);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+
   .progress-outer{background:#11141a;border-radius:99px;height:9px;overflow:hidden;border:1px solid var(--border);}
   .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--done));}
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
   .stat-box{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
   .stat-box .n{font-size:1.5rem;font-weight:700;}
   .topic-group-head{display:flex;align-items:center;gap:10px;margin:22px 0 10px;}
-  .topic-group-head h3{margin:0;font-size:1rem;}
   input[type=number]{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:7px;width:70px;}
-  select{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:.85rem;}
   .empty{padding:30px;text-align:center;color:var(--muted);}
   footer{text-align:center;color:var(--muted);font-size:.75rem;padding:20px;}
   .pill{font-size:.72rem;color:var(--muted);}
@@ -69,44 +77,32 @@
 
 <header>
   <h1>🎯 Interview Sprint</h1>
-  <p>Android · Kotlin · Java · DSA Patterns · Algorithms · AI/MCP/Agents · System Design · Go — 20 min per card, mix &amp; mark as you go.</p>
+  <p>Android · Kotlin · Java · DSA Patterns · Algorithms · AI/MCP/Agents · System Design · Go — 10 fixed 2-hour blocks, Q&amp;A style, ordered by priority.</p>
 </header>
 
 <div class="wrap">
 
-  <div class="panel" id="sessionPanel">
-    <div class="row" style="justify-content:space-between;margin-bottom:12px;">
-      <div class="row">
-        <span class="pill">Build a session:</span>
-        <button class="btn" data-hrs="2">2 hr (6 cards)</button>
-        <button class="btn" data-hrs="4">4 hr (12 cards)</button>
-        <button class="btn" data-hrs="8">8 hr (24 cards)</button>
-        <button class="btn" data-hrs="16">16 hr (48 cards)</button>
-        <span class="pill">custom:</span>
-        <input type="number" id="customHrs" min="1" max="60" value="2" style="width:56px;">
-        <button class="btn" id="customGo">Go</button>
-      </div>
-      <button class="btn ghost small" id="regenBtn" title="Rebuild current session from scratch">↻ Regenerate</button>
+  <div class="panel">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px;">
+      <span class="pill">Pick a block — the order is fixed and ranked by interview priority (Block 1 = highest yield):</span>
     </div>
-    <div id="sessionMeta" class="pill" style="margin-bottom:8px;"></div>
-    <div id="sessionList"></div>
-    <div class="row" id="sessionActions" style="margin-top:10px;"></div>
+    <div class="block-grid" id="blockGrid"></div>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" data-tab="session">Today's Session</div>
-    <div class="tab" data-tab="browse">Browse All</div>
+  <div id="blockHeader" class="block-header"></div>
+  <div id="blockList"></div>
+  <div id="nextBlockCta"></div>
+
+  <div class="tabs" style="margin-top:30px;">
+    <div class="tab active" data-tab="browse">Browse by Topic</div>
     <div class="tab" data-tab="stats">Progress &amp; Weekly Goal</div>
   </div>
 
-  <div id="tab-session" class="tabpanel"></div>
-
-  <div id="tab-browse" class="tabpanel hidden">
+  <div id="tab-browse" class="tabpanel">
     <div class="row" style="margin-bottom:14px;">
       <span class="pill">Filter:</span>
       <button class="btn small active" data-filter="all">All</button>
       <button class="btn small" data-filter="incomplete">Incomplete</button>
-      <button class="btn small" data-filter="high">High priority only</button>
     </div>
     <div id="browseContent"></div>
   </div>
@@ -139,10 +135,10 @@
 
 </div>
 
-<footer>Progress is cached locally in your browser (localStorage) — nothing leaves this page.</footer>
+<footer>Content is fixed — nothing regenerates or reshuffles. Only checking a box changes anything. Progress is cached locally in your browser (localStorage).</footer>
 
 <script>
-/* ============ DATA ============ */
+/* ============ TOPICS ============ */
 const TOPICS = [
   {id:'android', name:'Android', color:'#3ddc84'},
   {id:'kotlin', name:'Kotlin', color:'#7f52ff'},
@@ -155,1159 +151,164 @@ const TOPICS = [
 ];
 const T = Object.fromEntries(TOPICS.map(t=>[t.id,t]));
 
+/* ============ FIXED, HAND-ORDERED Q&A CONTENT ============
+   60 cards total, grouped into 10 fixed 2-hour blocks (6 cards x 20min).
+   Order is intentional: Block 1 = the single highest-yield question per
+   domain, and priority tapers down through Block 10. Nothing here is
+   generated or shuffled at runtime. */
 const RAW = [
-// ---------------- ANDROID ----------------
-['android','high','Activity & Fragment Lifecycle', `
-<h4>Activity lifecycle</h4>
-<ul>
-<li><code>onCreate → onStart → onResume</code> (visible+interactive) <code>→ onPause → onStop → onDestroy</code>.</li>
-<li><code>onPause</code>: about to lose focus — release camera/sensors, commit lightweight state. Must be fast.</li>
-<li><code>onSaveInstanceState</code> is for transient UI state surviving process death / rotation, not a lifecycle callback per se — called before <code>onStop</code>.</li>
-<li>Configuration change (rotation) destroys &amp; recreates the Activity by default unless you handle <code>configChanges</code> yourself (rarely recommended).</li>
-</ul>
-<h4>Fragment lifecycle (extra states vs Activity)</h4>
-<ul>
-<li><code>onAttach → onCreate → onCreateView → onViewCreated → onStart → onResume → onPause → onStop → onDestroyView → onDestroy → onDetach</code>.</li>
-<li><code>onDestroyView</code> fires when the fragment's view is torn down but the Fragment instance may survive (e.g. back stack) — always null out view-binding refs here to avoid leaks.</li>
-<li>Use <code>viewLifecycleOwner</code> (not the Fragment itself) when observing LiveData/Flow from a Fragment's view.</li>
-</ul>
-<h4>Surviving config changes</h4>
-<ul>
-<li><b>ViewModel</b> survives rotation (tied to the Activity/Fragment's ViewModelStore, cleared on real finish).</li>
-<li><code>onSaveInstanceState</code>/<code>SavedStateHandle</code> survives process death too (ViewModel alone does not).</li>
-</ul>`],
-
-['android','high','Jetpack Compose Essentials', `
-<h4>Mental model</h4>
-<ul>
-<li>Compose is declarative: UI = function of state. Changing state triggers <b>recomposition</b> of only the composables that read that state (smart recomposition via snapshot system).</li>
-<li><code>remember { mutableStateOf(x) }</code> holds state across recompositions (not across config change — pair with <code>rememberSaveable</code> for that).</li>
-<li><b>State hoisting</b>: composables should be stateless where possible — take <code>value</code> + <code>onValueChange</code> lambda so the caller owns the state (like controlled components in React).</li>
-</ul>
-<h4>Side-effect APIs</h4>
-<ul>
-<li><code>LaunchedEffect(key)</code>: runs a coroutine when entering composition / when key changes; cancelled on leaving.</li>
-<li><code>DisposableEffect(key)</code>: for cleanup (listeners/observers) via <code>onDispose {}</code>.</li>
-<li><code>rememberCoroutineScope()</code>: scope tied to composition, for launching from callbacks (click handlers).</li>
-<li><code>derivedStateOf</code>: recompute a value only when its inputs actually change (avoid excess recomposition).</li>
-<li><code>SideEffect</code>: publish Compose state to non-Compose code after every successful recomposition.</li>
-</ul>
-<h4>Performance</h4>
-<ul>
-<li>Keep lambdas stable (avoid creating new lambda objects on every recomposition when possible); mark data classes used as params <code>@Immutable</code>/<code>@Stable</code> if applicable.</li>
-<li><code>key()</code> in lists (<code>LazyColumn</code> items) to preserve identity across reordering.</li>
-</ul>`],
-
-['android','high','App Components, Intents & Services', `
-<h4>Four components</h4>
-<ul><li>Activity (UI screen), Service (background work, no UI), BroadcastReceiver (system/app-wide events), ContentProvider (structured data sharing across apps).</li></ul>
-<h4>Intents</h4>
-<ul>
-<li><b>Explicit</b>: target component by class name (within your app). <b>Implicit</b>: declare an action (<code>ACTION_VIEW</code>) and let the OS resolve via <code>IntentFilter</code>s.</li>
-<li><code>PendingIntent</code>: a token letting another app/system (Notification, AlarmManager) execute your Intent later with your app's permissions. Since Android 12, must specify mutability (<code>FLAG_IMMUTABLE</code> / <code>FLAG_MUTABLE</code>).</li>
-</ul>
-<h4>Services</h4>
-<ul>
-<li><b>Foreground Service</b>: user-visible notification required, for ongoing tasks (music, tracking) — exempt from some background limits; needs a declared type (Android 14+).</li>
-<li><b>Bound Service</b>: client-server via <code>onBind</code>, lives as long as something is bound.</li>
-<li>For deferrable background work → prefer <b>WorkManager</b>, not a raw Service.</li>
-</ul>
-<h4>BroadcastReceiver</h4>
-<ul><li>Static (manifest-declared, limited since Android 8 for implicit broadcasts) vs dynamic (registered in code, unregister to avoid leaks).</li></ul>`],
-
-['android','med','App Architecture: MVVM / MVI / Clean', `
-<h4>MVVM (Google's recommended baseline)</h4>
-<ul>
-<li>View (Activity/Fragment/Compose) observes <b>ViewModel</b> state (<code>StateFlow</code>/<code>LiveData</code>); ViewModel calls a <b>Repository</b>; Repository abstracts data sources (network + Room cache).</li>
-<li>ViewModel must never hold a reference to a View/Context (leak + lifecycle mismatch) — use <code>AndroidViewModel</code> only for <code>Application</code> context if truly needed.</li>
-</ul>
-<h4>MVI (Model-View-Intent)</h4>
-<ul>
-<li>Single immutable <b>UiState</b> data class rendered by the View; user actions become <b>Intents/Events</b> reduced into a new state. Unidirectional data flow — easier to test/debug (time-travel), more boilerplate.</li>
-</ul>
-<h4>Clean Architecture layering</h4>
-<ul>
-<li><b>Presentation</b> (UI+ViewModel) → <b>Domain</b> (UseCases, plain Kotlin, no Android deps) → <b>Data</b> (Repository impl, Room/Retrofit).</li>
-<li>Dependency rule: outer layers depend inward; Domain defines interfaces, Data implements them (Dependency Inversion).</li>
-</ul>
-<h4>Repository pattern</h4>
-<ul><li>Single source of truth; typically "network fetch → write to DB → UI observes DB" (offline-first) rather than serving network responses directly.</li></ul>`],
-
-['android','high','Concurrency in Android', `
-<h4>Coroutines over threads</h4>
-<ul>
-<li><code>viewModelScope</code> auto-cancels when the ViewModel is cleared; <code>lifecycleScope</code> auto-cancels with the lifecycle owner.</li>
-<li><code>repeatOnLifecycle(Lifecycle.State.STARTED)</code> — the modern-correct way to collect Flows in a Fragment/Activity, avoiding leaks/crashes when UI is stopped (replaces manual launchWhenStarted).</li>
-</ul>
-<h4>Dispatchers</h4>
-<ul>
-<li><code>Dispatchers.Main</code> (UI thread), <code>Default</code> (CPU-bound work), <code>IO</code> (blocking I/O, larger thread pool), <code>Unconfined</code> (rarely used, runs in caller thread until first suspension).</li>
-<li><code>withContext(Dispatchers.IO)</code> to hop off main thread for a suspend block, then automatically return.</li>
-</ul>
-<h4>Flow vs LiveData</h4>
-<ul>
-<li><code>StateFlow</code>: hot, always has a value, conflated — good replacement for LiveData in ViewModel, works outside Android (testable in pure Kotlin).</li>
-<li><code>SharedFlow</code>: for one-off events (navigation, snackbars) — configurable replay/buffer, no default value.</li>
-<li>LiveData is lifecycle-aware out of the box but Android-only and less flexible for operators than Flow.</li>
-</ul>
-<h4>Background work</h4>
-<ul><li><b>WorkManager</b>: guaranteed, deferrable, survives process death/reboot — for sync, uploads. Use constraints (network, charging) + <code>ExistingWorkPolicy</code> to avoid duplicate scheduling.</li></ul>`],
-
-['android','med','Dependency Injection (Hilt/Dagger)', `
-<h4>Why DI</h4>
-<ul><li>Decouples object construction from usage → testable (swap real Repository for a fake in tests), avoids manual singleton plumbing.</li></ul>
-<h4>Core annotations</h4>
-<ul>
-<li><code>@Inject</code> constructor — tells Hilt/Dagger how to build a class.</li>
-<li><code>@Module</code> + <code>@Provides</code> (or <code>@Binds</code> for interface→impl) — for classes you can't annotate directly (e.g. Retrofit instance, third-party class).</li>
-<li><code>@HiltAndroidApp</code> on Application, <code>@AndroidEntryPoint</code> on Activity/Fragment/Service that wants injection.</li>
-<li><code>@HiltViewModel</code> + <code>@Inject constructor</code> on ViewModel, obtained via <code>hiltViewModel()</code> in Compose or <code>by viewModels()</code>.</li>
-</ul>
-<h4>Scopes</h4>
-<ul>
-<li><code>@Singleton</code> (SingletonComponent, app lifetime), <code>@ActivityScoped</code>, <code>@ViewModelScoped</code> — match the component to the lifetime you actually need to avoid memory hangs.</li>
-</ul>
-<h4>Interview angle</h4>
-<ul><li>Explain compile-time (Dagger/Hilt code-gen) vs runtime (Koin service locator) DI trade-off: Hilt catches wiring errors at build time, Koin is simpler but fails at runtime.</li></ul>`],
-
-['android','med','Storage: Room, DataStore, ContentProvider', `
-<h4>Room</h4>
-<ul>
-<li><code>@Entity</code>/<code>@Dao</code>/<code>@Database</code>; DAO methods returning <code>Flow&lt;T&gt;</code> auto-emit on table change — great for reactive "single source of truth" UI.</li>
-<li>Migrations required for schema changes in production (<code>Migration(from,to)</code>) — <code>fallbackToDestructiveMigration()</code> only for dev.</li>
-</ul>
-<h4>DataStore vs SharedPreferences</h4>
-<ul>
-<li><b>SharedPreferences</b>: synchronous API on main thread (can jank), no error signaling, XML file, easy data races.</li>
-<li><b>DataStore</b> (Preferences or Proto): async via Flow/coroutines, transactional, type-safe (Proto DataStore uses protobuf schema) — the recommended replacement.</li>
-</ul>
-<h4>ContentProvider</h4>
-<ul><li>Structured cross-app data sharing via a URI-based CRUD interface — mainly relevant now for exposing data to other apps (e.g. Contacts) or via <code>FileProvider</code> for secure file URIs.</li></ul>
-<h4>Paging</h4>
-<ul><li>Paging3: <code>PagingSource</code>/<code>RemoteMediator</code> for network+DB paged loading with a <code>PagingData</code> Flow consumed by <code>LazyPagingItems</code>/<code>PagingDataAdapter</code>.</li></ul>`],
-
-['android','high','Performance, Memory & ANRs', `
-<h4>ANR (Application Not Responding)</h4>
-<ul><li>Main thread blocked &gt;5s (input dispatch) or BroadcastReceiver &gt;10s. Fix: move I/O/DB/network off main thread, keep <code>onDraw</code>/lifecycle callbacks fast.</li></ul>
-<h4>Memory leaks — classic causes</h4>
-<ul>
-<li>Static reference to an Activity/View/Context (outlives the Activity).</li>
-<li>Inner (non-static) classes/anonymous listeners holding an implicit outer-class reference (e.g. a Handler posting a delayed Runnable that outlives the Activity).</li>
-<li>Registered listeners/observers never unregistered (LiveData observer with wrong lifecycle owner, BroadcastReceiver, RxJava subscription without disposing).</li>
-<li>Use <b>LeakCanary</b> in debug builds; Android Studio <b>Profiler</b> (Memory/CPU) to inspect heap dumps &amp; retained size.</li>
-</ul>
-<h4>RecyclerView performance</h4>
-<ul><li>ViewHolder pattern (reuse views), <code>DiffUtil</code> for minimal list updates, stable IDs (<code>setHasStableIds</code>), avoid nested scroll containers, use <code>notifyItemChanged</code> not <code>notifyDataSetChanged</code>.</li></ul>
-<h4>Build-time</h4>
-<ul><li>R8/ProGuard: shrinking + obfuscation + optimization. Baseline Profiles: precompile hot code paths (AOT) to cut cold-start jank.</li></ul>`],
-
-// ---------------- KOTLIN ----------------
-['kotlin','high','Null Safety & Scope Functions', `
-<h4>Null safety</h4>
-<pre><code>var a: String? = null           // nullable
-val len = a?.length              // safe call -> null if a is null
-val len2 = a?.length ?: 0        // elvis default
-val len3 = a!!.length            // force unwrap, throws NPE if null (avoid in prod code)</code></pre>
-<ul>
-<li><code>lateinit var</code>: for non-null <code>var</code>s initialized later (not primitives) — accessing before init throws <code>UninitializedPropertyAccessException</code>.</li>
-<li><code>by lazy { ... }</code>: for <code>val</code>s, computed once on first access, thread-safe by default (<code>LazyThreadSafetyMode.SYNCHRONIZED</code>).</li>
-</ul>
-<h4>Scope functions — pick by return value &amp; receiver</h4>
-<table style="width:100%;border-collapse:collapse;font-size:.85em;">
-<tr style="color:#9aa3b2;"><td>fn</td><td>receiver</td><td>returns</td><td>typical use</td></tr>
-<tr><td><code>let</code></td><td><code>it</code></td><td>lambda result</td><td>null-check + transform: <code>a?.let{...}</code></td></tr>
-<tr><td><code>run</code></td><td><code>this</code></td><td>lambda result</td><td>object config + compute result</td></tr>
-<tr><td><code>apply</code></td><td><code>this</code></td><td>the object</td><td>configure &amp; return same object (builder-ish)</td></tr>
-<tr><td><code>also</code></td><td><code>it</code></td><td>the object</td><td>side-effects (logging) mid-chain</td></tr>
-<tr><td><code>with</code></td><td><code>this</code></td><td>lambda result</td><td>grouped calls on a non-null object, not an extension</td></tr>
-</table>`],
-
-['kotlin','high','Classes: data / sealed / object / enum / inline', `
-<pre><code>data class User(val id: Int, val name: String)   // equals/hashCode/copy/toString/componentN auto-generated
-val u2 = user.copy(name = "New")
-
-sealed class Result&lt;out T&gt;
-data class Success&lt;T&gt;(val data: T): Result&lt;T&gt;()
-data class Error(val msg: String): Result&lt;Nothing&gt;()
-// 'when' over a sealed class is exhaustive -> compiler forces you to handle all branches
-
-object NetworkClient { fun call() { } }          // singleton, lazily created on first access
-
-class Wrapper(x: Int) {
-  companion object {                              // "static"-like holder, one per class
-    fun create(x: Int) = Wrapper(x)
-  }
-}
-
-enum class Direction { NORTH, SOUTH, EAST, WEST }
-
-@JvmInline value class UserId(val value: String)  // zero-overhead wrapper type, compiled away</code></pre>
-<ul>
-<li><code>data class</code> equality is structural (by properties), unlike plain classes (reference equality unless you override).</li>
-<li><code>sealed</code> restricts subclassing to the same file/module — enables exhaustive <code>when</code>, great for representing UI/Result states.</li>
-<li>Inline/value classes avoid boxing overhead for simple typed wrappers (type-safety without allocation cost).</li>
-</ul>`],
-
-['kotlin','high','Functions: higher-order, lambdas, extensions', `
-<pre><code>fun &lt;T, R&gt; T.applyTransform(block: (T) -> R): R = block(this)   // extension fn
-
-fun repeat(times: Int, action: (Int) -> Unit) {                   // higher-order fn
-  for (i in 0 until times) action(i)
-}
-repeat(3) { println(it) }                       // trailing lambda syntax
-
-fun greet(name: String = "World", suffix: String = "!") =         // default + named args
-  "Hello, $name$suffix"
-greet(suffix = "?")
-
-infix fun Int.pow(n: Int): Int = ...             // a pow 2  (infix call style)
-
-fun sum(vararg nums: Int) = nums.sum()           // varargs
-
-inline fun &lt;reified T&gt; isType(x: Any) = x is T  // 'reified' keeps type info at runtime (needs 'inline')</code></pre>
-<h4>Notes</h4>
-<ul>
-<li>Extension functions are resolved <b>statically</b> (compile-time, based on declared type) — not true polymorphism/override.</li>
-<li><code>inline</code> functions copy the lambda body at call site — avoids allocation of a Function object &amp; enables non-local <code>return</code> from inside the lambda.</li>
-<li>Function types: <code>(A, B) -> R</code>; a lambda is just an instance of a functional interface/type under the hood.</li>
-</ul>`],
-
-['kotlin','med','Collections & Functional Operators', `
-<pre><code>val nums = listOf(1,2,3,4,5)
-nums.map { it * 2 }                 // [2,4,6,8,10]
-nums.filter { it % 2 == 0 }         // [2,4]
-nums.reduce { acc, x -> acc + x }   // 15 (no initial value, throws on empty)
-nums.fold(0) { acc, x -> acc + x }  // 15 (initial value, safe on empty)
-nums.groupBy { it % 2 }             // {1=[1,3,5], 0=[2,4]}
-nums.associateBy { it.toString() }  // Map&lt;String,Int&gt; keyed by custom key
-nums.partition { it > 2 }           // Pair(matching, rest)
-nums.sortedByDescending { it }
-listOf(listOf(1,2), listOf(3)).flatten()   // [1,2,3]
-nums.asSequence().map{it*2}.filter{it>4}.toList()  // lazy, evaluated element-by-element</code></pre>
-<h4>List vs Sequence</h4>
-<ul>
-<li><code>List</code> operations are <b>eager</b> — each <code>map</code>/<code>filter</code> allocates a full intermediate list.</li>
-<li><code>Sequence</code> is <b>lazy</b> (like Java Stream) — operations are fused and run element-by-element only when a terminal op (<code>toList</code>, <code>first</code>, <code>sum</code>) is invoked. Prefer for large/chained pipelines.</li>
-</ul>
-<h4>Mutability</h4>
-<ul><li><code>listOf</code>/<code>mapOf</code> are read-only views; <code>mutableListOf</code>/<code>ArrayList</code> for mutation. Kotlin collections aren't inherently immutable — a read-only <code>List</code> can still change if the underlying mutable list changes.</li></ul>`],
-
-['kotlin','high','Coroutines Syntax', `
-<pre><code>suspend fun fetchUser(): User { ... }              // can only be called from a coroutine/suspend fn
-
-val job = CoroutineScope(Dispatchers.IO).launch {   // fire-and-forget, returns Job
-  val u = fetchUser()
-}
-
-val deferred = scope.async { fetchUser() }          // returns Deferred&lt;User&gt;, use for concurrent results
-val u = deferred.await()
-
-suspend fun loadAll() = coroutineScope {             // structured concurrency: waits for children, propagates cancellation/errors
-  val a = async { fetchA() }
-  val b = async { fetchB() }
-  Pair(a.await(), b.await())
-}
-
-withContext(Dispatchers.IO) { blockingCall() }       // switch dispatcher for a block, then return to caller's</code></pre>
-<h4>launch vs async</h4>
-<ul><li><code>launch</code>: no result, exceptions propagate immediately to the scope/parent. <code>async</code>: result via <code>await()</code>; exception is held until <code>await()</code> is called (unless using <code>supervisorScope</code>).</li></ul>
-<h4>Flow basics</h4>
-<pre><code>fun numbers(): Flow&lt;Int&gt; = flow { for (i in 1..3) { emit(i); delay(100) } }
-numbers().map{it*2}.filter{it>2}.collect { println(it) }</code></pre>
-<ul><li>Cold (starts producing only when collected) vs <code>StateFlow</code>/<code>SharedFlow</code> (hot). <code>channelFlow</code>/<code>Channel</code> for concurrent producers.</li></ul>`],
-
-['kotlin','med','Generics & Variance', `
-<pre><code>class Box&lt;out T&gt;(val item: T)          // 'out' = covariant: Box&lt;Cat&gt; is-a Box&lt;Animal&gt; (T only produced/read)
-class Sink&lt;in T&gt; { fun put(t: T) {} }   // 'in' = contravariant: Sink&lt;Animal&gt; is-a Sink&lt;Cat&gt; (T only consumed/written)
-class Node&lt;T&gt;(val v: T)                 // invariant (default): Node&lt;Cat&gt; and Node&lt;Animal&gt; unrelated
-
-fun printAll(list: List&lt;*&gt;) { }         // star projection: unknown type, read-only safe access as Any?
-
-inline fun &lt;reified T&gt; Gson.fromJson(json: String): T =
-  this.fromJson(json, T::class.java)     // 'reified' lets you use T at runtime, only legal with 'inline'</code></pre>
-<h4>Why it matters</h4>
-<ul>
-<li>Kotlin's built-in <code>List&lt;out T&gt;</code> is covariant (read-only) while <code>MutableList&lt;T&gt;</code> is invariant (can both read &amp; write, so it can't safely be covariant — the classic "why isn't <code>Array&lt;String&gt;</code> a <code>Array&lt;Object&gt;</code>" problem).</li>
-<li>Declaration-site variance (<code>in</code>/<code>out</code> on the class) vs Java's use-site wildcards (<code>? extends</code>/<code>? super</code> at call site) — Kotlin lets the class author decide once.</li>
-</ul>`],
-
-['kotlin','med','Delegation & Property Delegates', `
-<pre><code>class Repo { fun fetch() = "data" }
-interface Fetcher { fun fetch(): String }
-class ViewModel(repo: Fetcher) : Fetcher by repo   // class delegation: forwards calls to 'repo'
-
-val lazyValue: String by lazy { println("computed"); "hello" }   // computed once, cached
-
-var name: String by Delegates.observable("initial") { prop, old, new ->
-  println("$old -> $new")                          // property delegate: react to changes
-}
-
-class Prefs(ctx: Context) {
-  var userId: String by SharedPrefDelegate(ctx, "uid", "")  // common Android pattern: custom delegate wrapping SharedPreferences
-}</code></pre>
-<h4>How it works</h4>
-<ul>
-<li>A delegate is any object exposing <code>getValue</code>/<code>setValue</code> operator functions — Kotlin compiles <code>by</code> into calls to those.</li>
-<li>Common built-ins: <code>lazy</code>, <code>observable</code>, <code>vetoable</code> (can reject a change), <code>Map</code> delegation (property values backed by a map — handy for dynamic/config objects).</li>
-<li>Class delegation (<code>by</code> on a class) = composition that behaves like inheritance for interface conformance, without an <code>extends</code> chain — favors "composition over inheritance".</li>
-</ul>`],
-
-['kotlin','med','Kotlin Quick Syntax Cheatsheet', `
-<pre><code>when (x) {                                 // 'when' = powerful switch, can branch on types/ranges
-  is String -> println("string")
-  in 1..10 -> println("small")
-  else -> println("other")
-}
-
-val (id, name) = user                      // destructuring (needs componentN(), auto for data class)
-
-for (i in 0 until 10 step 2) {}             // ranges: .. inclusive, until exclusive, downTo, step
-
-val msg = "Count: ${'$'}{items.size}"                 // string templates
-
-fun max(a: Int, b: Int) = if (a > b) a else b   // expression-bodied function
-
-const val MAX = 100                          // compile-time constant (top-level/companion only)
-
-class Point(val x: Int, val y: Int) {
-  operator fun plus(o: Point) = Point(x+o.x, y+o.y)   // operator overloading
-}
-
-typealias Handler = (String) -> Unit          // typealias for readability</code></pre>
-<h4>Interview one-liners</h4>
-<ul>
-<li><code>val</code> vs <code>var</code>: read-only reference vs reassignable (object contents can still mutate either way).</li>
-<li>No checked exceptions in Kotlin (unlike Java) — no <code>throws</code> declarations required.</li>
-<li>Everything is an object/expression-oriented: <code>if</code>, <code>when</code>, <code>try</code> can all return values.</li>
-</ul>`],
-
-// ---------------- JAVA ----------------
-['java','high','Threading Fundamentals', `
-<h4>Creating threads</h4>
-<ul>
-<li>Extend <code>Thread</code> (uses inheritance, less flexible) vs implement <code>Runnable</code>/<code>Callable</code> and pass to a <code>Thread</code>/<code>ExecutorService</code> (preferred — composition, reusable, testable).</li>
-<li><code>Callable&lt;V&gt;</code> can return a value and throw checked exceptions; <code>Runnable</code> cannot.</li>
-</ul>
-<h4>synchronized</h4>
-<ul>
-<li>Intrinsic lock (monitor) per object; <code>synchronized</code> method locks on <code>this</code> (or the Class object if static). Guarantees mutual exclusion <b>and</b> visibility (happens-before on unlock/lock).</li>
-<li><code>wait()</code>/<code>notify()</code>/<code>notifyAll()</code> must be called while holding the lock; <code>wait</code> releases the lock and re-acquires on wake — classic producer/consumer building block.</li>
-</ul>
-<h4>volatile</h4>
-<ul><li>Guarantees <b>visibility</b> (reads always see latest write) and prevents instruction reordering around it — does <b>not</b> guarantee atomicity of compound actions like <code>i++</code>.</li></ul>
-<h4>Thread states</h4>
-<ul><li><code>NEW → RUNNABLE ⇄ (BLOCKED / WAITING / TIMED_WAITING) → TERMINATED</code>. <code>BLOCKED</code> = waiting on a monitor lock; <code>WAITING</code> = <code>wait()</code>/<code>join()</code> with no timeout.</li></ul>`],
-
-['java','high','java.util.concurrent Essentials', `
-<h4>ExecutorService</h4>
-<pre><code>ExecutorService pool = Executors.newFixedThreadPool(4);
-Future&lt;Integer&gt; f = pool.submit(() -> compute());
-int result = f.get();          // blocks until done (or f.get(timeout, unit))
-pool.shutdown();</code></pre>
-<ul><li>Prefer <code>ThreadPoolExecutor</code> configured explicitly (core/max size, queue, rejection policy) over <code>Executors.newX()</code> factory methods in production — the factories can hide unbounded queues → OOM risk.</li></ul>
-<h4>CompletableFuture</h4>
-<pre><code>CompletableFuture.supplyAsync(() -> fetch())
-  .thenApply(r -> transform(r))
-  .thenAccept(System.out::println)
-  .exceptionally(ex -> { log(ex); return null; });</code></pre>
-<h4>Coordination primitives</h4>
-<ul>
-<li><code>CountDownLatch</code>: one-time gate — N threads call <code>await()</code> until count hits 0 (not reusable).</li>
-<li><code>CyclicBarrier</code>: N threads wait for each other repeatedly, reusable, runs an optional action when the barrier trips.</li>
-<li><code>Semaphore</code>: bounds concurrent access to a resource pool via permits (<code>acquire</code>/<code>release</code>).</li>
-<li><code>ReentrantLock</code>: explicit lock with <code>tryLock</code>, fairness option, and <code>Condition</code>s (multiple wait-sets vs one per <code>synchronized</code> object). <code>ReadWriteLock</code>: many readers / one writer.</li>
-</ul>`],
-
-['java','med','Concurrent Collections & Atomics', `
-<ul>
-<li><code>ConcurrentHashMap</code>: segment/bucket-level locking (Java 8+: CAS + fine-grained synchronized on bins) — no full-map lock for reads, much better throughput than <code>Collections.synchronizedMap</code>.</li>
-<li><code>CopyOnWriteArrayList</code>: writes copy the whole backing array — great for read-heavy, rarely-written lists (e.g. listener lists); iteration never throws <code>ConcurrentModificationException</code> and sees a snapshot.</li>
-<li><code>BlockingQueue</code> (<code>ArrayBlockingQueue</code>, <code>LinkedBlockingQueue</code>): <code>put</code>/<code>take</code> block when full/empty — the standard producer-consumer building block, also what <code>ThreadPoolExecutor</code> uses internally.</li>
-<li><code>AtomicInteger</code>/<code>AtomicLong</code>/<code>AtomicReference</code>: lock-free CAS (compare-and-swap) updates — <code>incrementAndGet()</code>, <code>compareAndSet(expected,new)</code>. Use over <code>synchronized</code> for simple counters (much cheaper, no blocking).</li>
-<li><code>ConcurrentLinkedQueue</code>: lock-free unbounded queue (non-blocking, CAS-based).</li>
-</ul>
-<h4>Interview trap</h4>
-<ul><li>"Is <code>ConcurrentHashMap</code> fully thread-safe for compound operations?" — single ops are atomic, but check-then-act across two calls (e.g. <code>if(!map.containsKey(k)) map.put(k,v)</code>) is not — use <code>putIfAbsent</code>/<code>compute</code>/<code>merge</code> instead.</li></ul>`],
-
-['java','med','Java Memory Model (JMM)', `
-<h4>Happens-before</h4>
-<ul>
-<li>The JMM defines what orderings/visibility are guaranteed across threads without extra sync. Without a happens-before edge, one thread may never observe another's write (due to caching/reordering).</li>
-<li>Happens-before sources: unlocking a monitor happens-before a later lock of the same monitor; writing a <code>volatile</code> happens-before a subsequent read of it; a thread's actions happen-before <code>Thread.join()</code> returns to the joiner; actions before <code>Thread.start()</code> happen-before the new thread's run.</li>
-</ul>
-<h4>Immutability</h4>
-<ul><li>A properly-constructed immutable object (all fields <code>final</code>, no reference escaping the constructor) is safe to share across threads with <b>no</b> synchronization — this is why <code>String</code>, boxed types, and Kotlin <code>data class</code> with <code>val</code> are inherently thread-safe to read.</li></ul>
-<h4>final fields</h4>
-<ul><li>The JMM guarantees other threads see a fully-initialized value for <code>final</code> fields after the constructor completes — <b>provided</b> the reference to the object doesn't escape during construction.</li></ul>
-<h4>Practical rule</h4>
-<ul><li>Prefer confinement (thread-local / no sharing) or immutability first; reach for locks/atomics only for genuinely shared mutable state.</li></ul>`],
-
-['java','med','Collections Internals: HashMap & friends', `
-<h4>HashMap</h4>
-<ul>
-<li>Array of buckets; <code>hashCode()</code> → spread function → bucket index. Collisions form a linked list, converted to a red-black <b>tree</b> per bucket once length ≥ 8 (Java 8+) for O(log n) worst case instead of O(n).</li>
-<li>Resizes (doubles capacity) when size &gt; capacity × loadFactor (default 0.75) — resizing rehashes everything, so pre-sizing avoids repeated rehash cost.</li>
-<li><b>equals/hashCode contract</b>: equal objects must have equal hashCodes (not vice versa); violating this breaks HashMap/HashSet lookups silently.</li>
-</ul>
-<h4>Other maps</h4>
-<ul>
-<li><code>LinkedHashMap</code>: HashMap + insertion (or access, for LRU) order via a doubly-linked list; override <code>removeEldestEntry</code> for a simple LRU cache.</li>
-<li><code>TreeMap</code>: red-black tree, keys sorted (natural order or <code>Comparator</code>), O(log n) ops, supports range queries (<code>floorKey</code>, <code>ceilingKey</code>, <code>headMap</code>).</li>
-</ul>
-<h4>Fail-fast iterators</h4>
-<ul><li>Structural modification during iteration (outside the iterator's own <code>remove()</code>) throws <code>ConcurrentModificationException</code> — detected via a <code>modCount</code> check, not a hard guarantee (best-effort).</li></ul>`],
-
-['java','med','JVM & Garbage Collection Basics', `
-<h4>Memory areas</h4>
-<ul>
-<li><b>Heap</b>: objects (Young gen: Eden + 2 Survivor spaces; Old/Tenured gen for long-lived objects).</li>
-<li><b>Stack</b>: per-thread, holds frames (local vars, partial results, return address) — <code>StackOverflowError</code> on deep/infinite recursion.</li>
-<li><b>Metaspace</b> (post Java 8, replaced PermGen): class metadata, native memory.</li>
-</ul>
-<h4>GC algorithms (know the trade-off, not internals)</h4>
-<ul>
-<li><b>Serial/Parallel GC</b>: stop-the-world, throughput-oriented.</li>
-<li><b>G1 (Garbage First)</b>: default since Java 9 — region-based, aims for predictable pause times, good general default.</li>
-<li><b>ZGC/Shenandoah</b>: low-latency, mostly concurrent, sub-millisecond pauses for very large heaps.</li>
-</ul>
-<h4>Class loading</h4>
-<ul><li>Bootstrap → Extension/Platform → Application classloader, delegation model (child asks parent first) — prevents core class spoofing.</li></ul>
-<h4>JIT</h4>
-<ul><li>Bytecode interpreted first; hot methods get compiled to native code (C1 quick/C2 aggressive tiers in HotSpot) — explains why benchmarks need a warm-up phase.</li></ul>`],
-
-['java','med','Streams API (Java 8+)', `
-<pre><code>List&lt;String&gt; names = people.stream()
-  .filter(p -> p.getAge() > 18)
-  .map(Person::getName)
-  .sorted()
-  .collect(Collectors.toList());
-
-Map&lt;Boolean, List&lt;Person&gt;> byAdult =
-  people.stream().collect(Collectors.partitioningBy(p -> p.getAge() >= 18));
-
-Optional&lt;Person&gt; oldest = people.stream().max(Comparator.comparingInt(Person::getAge));
-oldest.ifPresentOrElse(System.out::println, () -> System.out.println("none"));
-
-int total = people.stream().mapToInt(Person::getAge).sum();   // primitive stream, avoids boxing</code></pre>
-<h4>Key points</h4>
-<ul>
-<li>Streams are <b>lazy</b> until a terminal op (<code>collect</code>, <code>forEach</code>, <code>reduce</code>) runs; a stream can only be consumed once.</li>
-<li><code>.parallel()</code> uses the common <code>ForkJoinPool</code> — helpful only for large, CPU-bound, splittable work; overhead can lose for small collections or I/O-bound tasks.</li>
-<li><code>Optional</code>: avoid <code>Optional.get()</code> without a check; prefer <code>orElse</code>/<code>orElseGet</code>/<code>map</code>/<code>ifPresent</code> — not meant as a general nullable field type.</li>
-</ul>`],
-
-['java','high','Concurrency Traps: Deadlock & Patterns', `
-<h4>Deadlock — four Coffman conditions</h4>
-<ul><li>Mutual exclusion, hold-and-wait, no preemption, circular wait — deadlock needs all four. Prevention typically targets <b>circular wait</b>: always acquire multiple locks in a consistent global order.</li></ul>
-<pre><code>// classic bug: threadA locks(1)->locks(2), threadB locks(2)->locks(1) => deadlock
-// fix: both threads always lock in the same order (e.g. by lock's identity hash / assigned id)</code></pre>
-<h4>Producer-consumer</h4>
-<ul><li>Canonical solution: <code>BlockingQueue</code> between producer(s) and consumer(s) — removes manual <code>wait/notify</code> bookkeeping entirely.</li></ul>
-<h4>ThreadLocal</h4>
-<ul><li>Per-thread variable copy (e.g. <code>SimpleDateFormat</code> which isn't thread-safe, or request-scoped context in servers). <b>Watch for leaks</b> in pooled-thread environments (app servers) — always <code>remove()</code> in a <code>finally</code> once done, since the thread (and its ThreadLocal map) is reused.</li></ul>
-<h4>Other traps to mention</h4>
-<ul>
-<li>Double-checked locking needs the field <code>volatile</code>, else a thread can observe a partially-constructed object.</li>
-<li>Livelock: threads keep changing state in response to each other but make no progress (contrast with deadlock's total freeze).</li>
-</ul>`],
-
-// ---------------- DSA PATTERNS ----------------
-['dsa','high','Two Pointers & Sliding Window', `
-<h4>When to reach for it</h4>
-<ul><li>Sorted array/string problems, subarray/substring with a constraint (sum, distinct chars, at-most-K), pair/triplet-sum problems.</li></ul>
-<h4>Two pointers (opposite ends)</h4>
-<ul><li>Start at both ends, move inward based on a comparison — classic: pair with target sum in sorted array, container-with-most-water, trapping rain water (two-pointer variant), valid palindrome.</li></ul>
-<h4>Sliding window (same direction)</h4>
-<ul>
-<li><b>Fixed size</b>: maintain a window of size K, slide by adding right / removing left, update a running aggregate incrementally (avoid recomputation).</li>
-<li><b>Variable size</b>: grow right pointer until constraint breaks, then shrink left pointer until valid again — typical for "longest substring with at most K distinct chars", "minimum window substring", "longest subarray with sum ≤ S".</li>
-</ul>
-<h4>Recognize it by</h4>
-<ul><li>Keywords: "contiguous subarray/substring", "longest/shortest/count of", "at most/exactly K distinct", monotonic constraint as window grows. Complexity is usually O(n) vs a naive O(n²).</li></ul>`],
-
-['dsa','high','Fast & Slow Pointers (Cycle Detection)', `
-<h4>Core idea</h4>
-<ul><li>Two pointers moving at different speeds (1 step / 2 steps) through a linked structure — if there's a cycle, they must eventually meet (Floyd's Tortoise and Hare).</li></ul>
-<h4>Standard toolkit</h4>
-<ul>
-<li>Detect a cycle in a linked list: <code>slow = slow.next; fast = fast.next.next</code>, cycle exists if they meet.</li>
-<li>Find the cycle's <b>start node</b>: after they meet, reset one pointer to head, advance both by 1 step — they meet again at the cycle start (classic follow-up).</li>
-<li>Find the middle of a linked list in one pass: when fast reaches the end, slow is at the middle.</li>
-<li>Detect a "happy number" style cycle in a value sequence (not just linked lists) — same technique applies to any function that can loop.</li>
-</ul>
-<h4>Recognize it by</h4>
-<ul><li>Linked list problems, or any "does this sequence of transformations eventually repeat" question, where O(1) extra space is desired (vs a HashSet-of-visited approach which is O(n) space but conceptually simpler).</li></ul>`],
-
-['dsa','high','Binary Search Variants', `
-<h4>Beyond "find x in sorted array"</h4>
-<ul>
-<li><b>Search on the answer</b>: when a predicate is monotonic (false...false,true...true) over a range of possible answers (capacity, speed, days), binary search the answer space itself, not the input array — e.g. "minimum capacity to ship in D days", "Koko eating bananas".</li>
-<li><b>Find boundary</b>: first/last occurrence of a value, leftmost insertion point (<code>lowerBound</code>/<code>upperBound</code>) — adjust the "move left/right" condition carefully to avoid off-by-one bugs.</li>
-<li><b>Rotated sorted array</b>: at each step one half is guaranteed sorted — compare against that half's bounds to decide which side to recurse into.</li>
-<li><b>2D matrix search</b>: treat as a flattened 1D sorted array (if fully sorted), or start from top-right/bottom-left corner for row+col sorted matrices (O(m+n)).</li>
-</ul>
-<h4>Template to memorize</h4>
-<pre><code>lo, hi = 0, n
-while lo < hi:
-  mid = lo + (hi - lo) // 2
-  if feasible(mid): hi = mid
-  else: lo = mid + 1
-return lo   // first index/value where feasible() is true</code></pre>`],
-
-['dsa','high','BFS / DFS & Graph Traversal Patterns', `
-<h4>When to use which</h4>
-<ul>
-<li><b>BFS</b>: shortest path in an unweighted graph, level-order problems, "minimum steps/hops" — uses a queue, explores level by level.</li>
-<li><b>DFS</b>: exploring all paths, connectivity, cycle detection, topological ordering, backtracking-adjacent problems — uses a stack/recursion.</li>
-</ul>
-<h4>Grid problems (very common)</h4>
-<ul><li>Number of islands, flood fill, rotting oranges (multi-source BFS — push all initial sources first, then expand level by level for "time to reach all" problems).</li></ul>
-<h4>Graph-specific patterns</h4>
-<ul>
-<li><b>Cycle detection</b>: undirected → track parent, if you reach a visited non-parent node it's a cycle; directed → track a "currently in recursion stack" set (white/gray/black coloring), a back-edge to a gray node means a cycle.</li>
-<li><b>Connected components</b>: DFS/BFS from each unvisited node, or Union-Find.</li>
-<li><b>Multi-source BFS</b>: seed the queue with multiple starting nodes at distance 0 simultaneously (e.g. nearest gate, rotting oranges).</li>
-<li><b>0-1 BFS</b>: deque-based BFS for graphs with only 0/1 edge weights — push 0-weight to front, 1-weight to back, avoids full Dijkstra.</li>
-</ul>`],
-
-['dsa','med','Backtracking Template', `
-<h4>General template</h4>
-<pre><code>def backtrack(path, choices):
-  if is_solution(path):
-    record(path); return   // or continue exploring for all solutions
-  for choice in choices:
-    if not valid(choice, path): continue
-    path.add(choice)
-    backtrack(path, remaining_choices(choices, choice))
-    path.remove(choice)          // undo — the defining step of backtracking</code></pre>
-<h4>Classic problem families</h4>
-<ul>
-<li><b>Subsets/Permutations/Combinations</b>: choose/don't-choose or swap-based generation; dedupe by sorting first + skipping equal siblings at the same recursion depth.</li>
-<li><b>N-Queens / Sudoku</b>: constraint-satisfaction with a "board state" — prune aggressively before recursing (check validity before placing, not after).</li>
-<li><b>Word search / path-finding on a grid</b>: mark visited before recursing, unmark on the way back (the "add/remove" is literally marking a grid cell).</li>
-</ul>
-<h4>Pruning is the whole game</h4>
-<ul><li>Backtracking is brute-force with early exit; the difference between TLE and AC is usually how early you can invalidate a branch (sort input, use running sums/counts, memoize repeated subproblems if overlapping → that's DP instead).</li></ul>`],
-
-['dsa','high','Dynamic Programming Patterns', `
-<h4>Recognize a DP problem</h4>
-<ul><li>Optimal substructure (answer built from answers to smaller subproblems) + overlapping subproblems (naive recursion recomputes the same state many times).</li></ul>
-<h4>Approach</h4>
-<ul><li>Define state precisely (what does <code>dp[i]</code> / <code>dp[i][j]</code> mean?) → write the recurrence → decide base cases → decide top-down memo (recursion + cache) or bottom-up tabulation (iterative, usually O(1) extra space possible via rolling array).</li></ul>
-<h4>Families to have ready</h4>
-<ul>
-<li><b>1D sequence</b>: climbing stairs, house robber (dp[i] = max(dp[i-1], dp[i-2]+val)), decode ways.</li>
-<li><b>Knapsack family</b>: 0/1 knapsack (each item once), unbounded knapsack (item reusable), subset-sum, partition equal subset — state = (index, remaining capacity).</li>
-<li><b>LIS (Longest Increasing Subsequence)</b>: O(n²) dp, or O(n log n) with patience sorting / binary search on a "tails" array.</li>
-<li><b>LCS (Longest Common Subsequence) / Edit Distance</b>: 2D grid dp over two strings, dp[i][j] from dp[i-1][j-1]/dp[i-1][j]/dp[i][j-1].</li>
-<li><b>Interval DP</b>: dp[i][j] over a range, built from smaller sub-ranges (matrix chain multiplication, burst balloons, palindrome partitioning).</li>
-<li><b>DP on trees / DP on grids with obstacles</b>: state includes a node/cell, transitions follow tree/grid structure.</li>
-</ul>`],
-
-['dsa','med','Heap / Top-K / Merge-K Patterns', `
-<h4>When you see "K-th largest/smallest" or "top K"</h4>
-<ul>
-<li>Maintain a heap of size K: for "K largest", use a <b>min-heap</b> of size K (pop the smallest whenever size exceeds K, so the heap always holds the K largest so far) — O(n log K), better than sorting (O(n log n)) when K ≪ n.</li>
-<li>"K closest points to origin", "top K frequent elements" (heap keyed by frequency, or bucket sort by frequency for O(n)).</li>
-</ul>
-<h4>Merge K sorted lists/arrays</h4>
-<ul><li>Push the head of each list into a min-heap keyed by value; pop the min, push that list's next element — O(n log K) total.</li></ul>
-<h4>Two-heap pattern</h4>
-<ul><li>"Find median from data stream": a max-heap for the lower half + a min-heap for the upper half, rebalanced so sizes differ by ≤1 — median is O(1) from the heap tops, insert is O(log n).</li></ul>
-<h4>Priority-queue-driven graph algos</h4>
-<ul><li>Dijkstra and Prim's MST are really "greedy + min-heap to always expand the cheapest frontier edge/node next".</li></ul>`],
-
-['dsa','med','Union-Find, Trie & Interval Patterns', `
-<h4>Union-Find (Disjoint Set Union)</h4>
-<ul>
-<li>Two ops: <code>find(x)</code> (with path compression) and <code>union(x,y)</code> (by rank/size) — near O(1) amortized (inverse-Ackermann).</li>
-<li>Use for: connected components, cycle detection in undirected graphs, Kruskal's MST, "number of islands II" (dynamic connectivity), "accounts merge".</li>
-</ul>
-<h4>Trie (prefix tree)</h4>
-<ul>
-<li>Node = map of char→child + isEndOfWord flag. O(L) insert/search where L = word length, independent of dictionary size.</li>
-<li>Use for: autocomplete, prefix search, word search II (DFS on board + trie to prune), longest common prefix.</li>
-</ul>
-<h4>Intervals</h4>
-<ul>
-<li><b>Merge intervals</b>: sort by start, then sweep merging overlaps (<code>cur.start ≤ prev.end</code>).</li>
-<li><b>Meeting rooms / min resources</b>: sort start &amp; end times separately (or use a min-heap of end times) — classic "sweep line" / greedy interval scheduling.</li>
-<li><b>Insert interval</b>: binary search or linear scan to find overlap boundary, merge in place.</li>
-</ul>`],
-
-// ---------------- KEY ALGORITHMS ----------------
-['algo','high','Sorting Algorithms — Compare & Contrast', `
-<table style="width:100%;border-collapse:collapse;font-size:.85em;">
-<tr style="color:#9aa3b2;"><td>Algo</td><td>Avg</td><td>Worst</td><td>Space</td><td>Stable?</td></tr>
-<tr><td>Quicksort</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>No</td></tr>
-<tr><td>Mergesort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr>
-<tr><td>Heapsort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(1)</td><td>No</td></tr>
-<tr><td>Insertion sort</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr>
-<tr><td>Counting/Radix</td><td>O(n+k)</td><td>O(n+k)</td><td>O(n+k)</td><td>Yes</td></tr>
-</table>
-<h4>Why it matters in interviews</h4>
-<ul>
-<li>Quicksort's worst case (already-sorted input + bad pivot choice) → mitigate with random/median-of-three pivot.</li>
-<li>Mergesort guarantees O(n log n) always and is <b>stable</b> — used for external sorting / linked lists (no random access needed) and when stability matters (e.g. sort by secondary key after primary).</li>
-<li>Heapsort: in-place, no extra memory, but not stable and worse cache locality than quicksort in practice.</li>
-<li>Counting/Radix sort beat the O(n log n) comparison lower bound because they're non-comparison sorts — only when keys are small-range integers (or fixed-width, for radix).</li>
-<li>Know that Java's <code>Arrays.sort</code> uses dual-pivot quicksort for primitives, <b>Timsort</b> (merge+insertion hybrid) for objects (needs stability).</li>
-</ul>`],
-
-['algo','high','Binary Search — Implementation Precision', `
-<pre><code>// standard: find exact target
-int lo = 0, hi = n - 1;
-while (lo <= hi) {
-  int mid = lo + (hi - lo) / 2;      // avoid overflow vs (lo+hi)/2
-  if (arr[mid] == target) return mid;
-  else if (arr[mid] < target) lo = mid + 1;
-  else hi = mid - 1;
-}
-return -1;
-
-// lower_bound: first index where arr[i] >= target
-int lo = 0, hi = n;
-while (lo < hi) {
-  int mid = lo + (hi - lo) / 2;
-  if (arr[mid] < target) lo = mid + 1; else hi = mid;
-}
-return lo;</code></pre>
-<h4>Common bugs to avoid</h4>
-<ul>
-<li>Infinite loop when using <code>mid = (lo+hi)/2</code> with <code>hi = mid</code> (should be <code>hi = n</code>, loop <code>lo &lt; hi</code>) vs <code>hi = mid-1</code> (loop <code>lo &lt;= hi</code>) — pick one convention and stick to it.</li>
-<li>Integer overflow: always <code>lo + (hi-lo)/2</code>, not <code>(lo+hi)/2</code>, in languages without arbitrary precision ints.</li>
-</ul>
-<h4>Complexity</h4>
-<ul><li>O(log n) time, O(1) space iterative (O(log n) stack space if recursive).</li></ul>`],
-
-['algo','high','Graph Algorithms: Dijkstra, BFS, Topo Sort', `
-<h4>Dijkstra (shortest path, non-negative weights)</h4>
-<pre><code>dist[src] = 0; pq = {(0, src)}
-while pq not empty:
-  (d, u) = pq.pop_min()
-  if d > dist[u]: continue          // stale entry, skip
-  for (v, w) in edges[u]:
-    if dist[u] + w < dist[v]:
-      dist[v] = dist[u] + w
-      pq.push((dist[v], v))</code></pre>
-<ul><li>O((V+E) log V) with a binary heap. Fails with negative edges (use Bellman-Ford instead, O(VE), which also detects negative cycles).</li></ul>
-<h4>BFS shortest path (unweighted)</h4>
-<ul><li>Simple queue-based BFS gives shortest path in # of edges — Dijkstra degenerates to this when all weights are 1.</li></ul>
-<h4>Topological Sort (DAG only)</h4>
-<ul>
-<li><b>Kahn's algorithm (BFS-based)</b>: compute in-degree of every node, push all in-degree-0 nodes to a queue, pop &amp; "remove" edges (decrement neighbor in-degree), push new zeros — if fewer than V nodes processed at the end, there's a cycle.</li>
-<li><b>DFS-based</b>: postorder DFS, push node to a stack after visiting all its descendants, reverse the stack at the end.</li>
-<li>Use cases: course schedule / prerequisite ordering, build dependency graphs.</li>
-</ul>`],
-
-['algo','high','Union-Find Implementation', `
-<pre><code>int[] parent, rank;
-int find(int x) {
-  if (parent[x] != x) parent[x] = find(parent[x]);  // path compression
-  return parent[x];
-}
-void union(int a, int b) {
-  int ra = find(a), rb = find(b);
-  if (ra == rb) return;
-  if (rank[ra] < rank[rb]) { int t=ra; ra=rb; rb=t; }
-  parent[rb] = ra;                                    // union by rank
-  if (rank[ra] == rank[rb]) rank[ra]++;
-}</code></pre>
-<h4>Why both optimizations matter</h4>
-<ul><li>Path compression alone: O(log n) amortized. Union by rank alone: O(log n). <b>Both together</b>: O(α(n)) amortized — inverse Ackermann, effectively constant for any realistic n.</li></ul>
-<h4>Classic uses</h4>
-<ul>
-<li>Kruskal's MST: sort edges by weight, union endpoints if they're in different sets (skip if already connected — that would form a cycle).</li>
-<li>Detecting a cycle while building an undirected graph incrementally.</li>
-<li>"Number of provinces/friend circles", "redundant connection", offline dynamic connectivity queries.</li>
-</ul>`],
-
-['algo','high','DP Classics: Knapsack, LCS, Edit Distance', `
-<h4>0/1 Knapsack</h4>
-<pre><code>// dp[w] = max value achievable with capacity w
-for item in items:
-  for w in range(capacity, item.weight - 1, -1):   // iterate DOWN to avoid reusing item
-    dp[w] = max(dp[w], dp[w - item.weight] + item.value)</code></pre>
-<h4>Longest Common Subsequence</h4>
-<pre><code>// dp[i][j] = LCS length of s1[0..i), s2[0..j)
-if s1[i-1] == s2[j-1]: dp[i][j] = dp[i-1][j-1] + 1
-else: dp[i][j] = max(dp[i-1][j], dp[i][j-1])</code></pre>
-<h4>Edit Distance (Levenshtein)</h4>
-<pre><code>if s1[i-1] == s2[j-1]: dp[i][j] = dp[i-1][j-1]
-else: dp[i][j] = 1 + min(dp[i-1][j],     // delete
-                          dp[i][j-1],     // insert
-                          dp[i-1][j-1])   // replace</code></pre>
-<h4>Interview tips</h4>
-<ul>
-<li>Always state the recurrence in words first, then code it — interviewers grade the reasoning, not just working code.</li>
-<li>Mention space optimization: most 2D DPs only need the previous row → reducible to O(n) space with a rolling array.</li>
-</ul>`],
-
-['algo','med','Tree Algorithms: Traversals & LCA', `
-<h4>Traversals (iterative, using an explicit stack)</h4>
-<ul>
-<li><b>Inorder</b> (left, node, right) — gives sorted order for a BST.</li>
-<li><b>Preorder</b> (node, left, right) — good for copying/serializing a tree.</li>
-<li><b>Postorder</b> (left, right, node) — good for deleting/computing subtree-dependent values (heights, sums).</li>
-<li><b>Level-order</b> = BFS with a queue, track level boundaries via queue size snapshot per level.</li>
-</ul>
-<h4>Lowest Common Ancestor (LCA)</h4>
-<ul>
-<li><b>General binary tree</b>: recursive — if current node is one of the two targets, return it; recurse left &amp; right; if both sides return non-null, current node is the LCA; else propagate the non-null side up.</li>
-<li><b>BST</b>: use ordering — walk down from root, go left if both targets &lt; node, right if both &gt; node, else current node is the LCA (O(h), no need to search both subtrees).</li>
-</ul>
-<h4>Balanced BST rotations (concept only, rarely coded live)</h4>
-<ul><li>AVL: rotate on insert/delete when balance factor exceeds ±1 (LL/RR/LR/RL rotation cases). Red-Black: fewer rotations, relaxed balance, what Java's <code>TreeMap</code> and C++'s <code>std::map</code> use internally.</li></ul>`],
-
-['algo','med','Bit Manipulation Tricks', `
-<pre><code>x & (x - 1)      // clears the lowest set bit -> useful for counting set bits, checking power of 2 (x & (x-1) == 0)
-x & (-x)         // isolates the lowest set bit
-x ^ x == 0        x ^ 0 == x        // XOR self-cancels -> "find the single non-duplicate" trick
-a ^= b; b ^= a; a ^= b;   // swap without a temp (rarely needed, but asked)
-x << 1  /  x >> 1          // multiply/divide by 2 (arithmetic shift preserves sign)
-x & 1                      // check odd/even
-~x + 1  ==  -x             // two's complement negation</code></pre>
-<h4>Patterns worth recognizing</h4>
-<ul>
-<li><b>Single Number</b>: XOR all elements — every paired value cancels, leaving the unpaired one. O(n) time, O(1) space.</li>
-<li><b>Counting set bits</b> (Brian Kernighan's): repeatedly do <code>x &= (x-1)</code> until 0, count iterations — runs in O(number of set bits).</li>
-<li><b>Subsets via bitmask</b>: for n items, iterate <code>mask</code> from 0 to 2^n - 1; bit <code>i</code> of <code>mask</code> set = include item i — a compact way to enumerate all subsets, common in small-n DP (traveling salesman / bitmask DP).</li>
-<li><b>Check power of two</b>: <code>n &gt; 0 &amp;&amp; (n &amp; (n-1)) == 0</code>.</li>
-</ul>`],
-
-['algo','med','Recursion & Complexity Analysis', `
-<h4>Recurrence relations — know these by sight</h4>
-<ul>
-<li><code>T(n) = T(n-1) + O(1)</code> → O(n) (linear recursion, e.g. simple factorial).</li>
-<li><code>T(n) = 2T(n/2) + O(n)</code> → O(n log n) (mergesort — Master Theorem case 2).</li>
-<li><code>T(n) = T(n/2) + O(1)</code> → O(log n) (binary search).</li>
-<li><code>T(n) = 2T(n-1) + O(1)</code> → O(2ⁿ) (naive recursive Fibonacci / subsets — exponential blowup from repeated work).</li>
-</ul>
-<h4>Master Theorem (quick form)</h4>
-<ul><li>For <code>T(n) = aT(n/b) + O(n^d)</code>: compare <code>d</code> to <code>log_b(a)</code> — if d &lt; log_b(a), T(n)=O(n^(log_b a)); if d = log_b(a), T(n)=O(n^d log n); if d &gt; log_b(a), T(n)=O(n^d).</li></ul>
-<h4>Practical recursion notes</h4>
-<ul>
-<li>Every recursive call = a stack frame → deep recursion risks <code>StackOverflowError</code>; consider converting to iterative + explicit stack for very deep trees/graphs.</li>
-<li>Memoization turns exponential naive recursion into polynomial (e.g. Fibonacci: O(2ⁿ) → O(n) with a cache) — this is the bridge between "recursion" and "DP" conceptually.</li>
-<li>Tail recursion (Kotlin's <code>tailrec</code>) can be optimized by the compiler into a loop, avoiding stack growth — not automatic in Java.</li>
-</ul>`],
-
-// ---------------- AI / MCP / AGENTS ----------------
-['ai','high','LLM Fundamentals', `
-<h4>Core mechanics</h4>
-<ul>
-<li><b>Tokens</b>: sub-word units (not words/characters); pricing &amp; context limits are measured in tokens. A model's <b>context window</b> is the max tokens (input+output) it can attend to in one call.</li>
-<li><b>Autoregressive generation</b>: the model predicts the next token given all previous tokens, one at a time — "temperature" controls randomness of that sampling (0 = deterministic/greedy-ish, higher = more diverse/creative).</li>
-<li><b>Roles</b>: <code>system</code> (instructions/persona, highest priority), <code>user</code>, <code>assistant</code> — conversation is just an alternating list of role-tagged messages sent fresh each call (the model itself is stateless between calls; "memory" is you resending history).</li>
-</ul>
-<h4>Practical knobs</h4>
-<ul>
-<li><b>Prompt caching</b>: reusing a stable prefix (system prompt, long docs) across calls to cut latency/cost — the provider caches the KV-state for that prefix.</li>
-<li><b>Structured/JSON output</b>: constrain the model to emit schema-valid output (function-calling schemas or explicit JSON mode) — critical for reliable downstream parsing.</li>
-<li><b>Latency vs cost vs quality</b>: bigger models = better reasoning, slower/costlier; smaller/distilled models for high-volume simple tasks — most production systems mix model sizes by task.</li>
-</ul>`],
-
-['ai','high','Prompting Basics', `
-<h4>Techniques worth naming correctly</h4>
-<ul>
-<li><b>Zero-shot</b>: just ask. <b>Few-shot</b>: include 2-5 example input/output pairs in the prompt to demonstrate the desired pattern/format.</li>
-<li><b>Chain-of-thought (CoT)</b>: ask the model to reason step-by-step before the final answer — improves accuracy on multi-step/logic/math tasks; modern "reasoning models" do an extended, often hidden, version of this internally.</li>
-<li><b>Role/system prompting</b>: setting persona/constraints upfront ("You are a senior Android reviewer... only flag real bugs") — most reliable lever for consistent output style.</li>
-<li><b>Structured output prompting</b>: explicitly specify a schema (or use a tool/function-call schema) rather than asking for free text you then have to parse.</li>
-</ul>
-<h4>Practical hygiene</h4>
-<ul>
-<li>Be specific about format, length, and what "done" looks like — ambiguity is the #1 cause of bad output, not model capability.</li>
-<li>Put the most important instructions near the start <i>and</i> end of a long prompt (recency + primacy both help attention).</li>
-<li>Iterate like an experiment: change one variable, compare outputs — prompt engineering is empirical, not purely theoretical.</li>
-</ul>`],
-
-['ai','high','RAG (Retrieval-Augmented Generation)', `
-<h4>Why</h4>
-<ul><li>LLMs have a frozen knowledge cutoff and no access to your private/live data by default — RAG retrieves relevant context at query time and stuffs it into the prompt, instead of (or in addition to) fine-tuning.</li></ul>
-<h4>Pipeline</h4>
-<ul>
-<li><b>Ingest</b>: chunk documents (by size/semantic boundary) → embed each chunk (vector) → store in a vector DB (Chroma, Pinecone, pgvector, FAISS).</li>
-<li><b>Query time</b>: embed the user's question → similarity search (cosine/dot-product) for top-K chunks → inject those chunks into the prompt as context → LLM answers grounded in that context.</li>
-</ul>
-<h4>Common improvements (interview-relevant)</h4>
-<ul>
-<li><b>Chunking strategy</b> matters a lot — too small loses context, too large dilutes relevance and wastes tokens.</li>
-<li><b>Hybrid search</b>: combine keyword/BM25 with vector similarity — pure embeddings miss exact-match terms (IDs, error codes).</li>
-<li><b>Re-ranking</b>: retrieve a wider candidate set cheaply, then re-rank top results with a more expensive cross-encoder for precision.</li>
-<li><b>Citations/grounding</b>: return source chunks alongside the answer so users (and evals) can verify — reduces silent hallucination risk.</li>
-</ul>`],
-
-['ai','high','Tool Use / Function Calling', `
-<h4>What it is</h4>
-<ul><li>You describe available "tools" (name, description, JSON-schema parameters) to the model; the model, instead of just replying in text, can emit a structured request to call one — your code executes it and feeds the result back as another message, then the model continues.</li></ul>
-<h4>The actual loop</h4>
-<pre><code>1. send messages + tool schemas to model
-2. model replies with either: final text, OR a tool_call (name + args)
-3. if tool_call: your code executes the real function, appends result to messages
-4. go back to step 1 (repeat until model returns final text)</code></pre>
-<h4>Design tips</h4>
-<ul>
-<li>Tool descriptions are prompts too — be precise about what the tool does, when to use/not use it, and constraints (rate limits, side effects).</li>
-<li>Keep tool surface minimal &amp; orthogonal — too many overlapping tools confuses selection; the model picks based on the description text, not the implementation.</li>
-<li>Validate/sanitize tool arguments before executing — the model's output is untrusted input from a security standpoint (esp. for tools with side effects like file writes, shell, DB writes).</li>
-<li>This is the foundation both MCP and "agents" are built on — an agent is essentially this loop running repeatedly with persistence/state.</li>
-</ul>`],
-
-['ai','high','Agents & the ReAct Pattern', `
-<h4>What makes something an "agent" vs a single LLM call</h4>
-<ul><li>An agent runs an autonomous <b>loop</b>: observe state → decide next action (possibly calling a tool) → act → observe the result → repeat, until a goal/termination condition is met — instead of one prompt → one response.</li></ul>
-<h4>ReAct (Reason + Act)</h4>
-<ul><li>Interleave explicit reasoning ("Thought: I need to check X") with actions (tool calls) and observations (tool results) — makes the model's plan legible/debuggable and lets it course-correct based on real results rather than committing to a full plan upfront.</li></ul>
-<h4>Key building blocks</h4>
-<ul>
-<li><b>Planning</b>: break a goal into steps (can be explicit up-front plan, or emergent step-by-step like ReAct).</li>
-<li><b>Memory</b>: short-term = conversation/scratchpad within the loop; long-term = external store (vector DB, files) the agent can read/write across sessions.</li>
-<li><b>Tool use</b>: the agent's only way to affect/observe the world beyond text.</li>
-<li><b>Termination/guardrails</b>: max iteration count, explicit "done" signal, human-in-the-loop approval for risky actions — without these, loops can run away (cost, infinite retries, unwanted side effects).</li>
-</ul>
-<h4>Multi-agent</h4>
-<ul><li>Split responsibilities across specialized agents (researcher, coder, reviewer) coordinated by an orchestrator — trades single-agent simplicity for better task decomposition on complex workflows (this repo's CrewAI/LangGraph/AutoGen modules are exactly this).</li></ul>`],
-
-['ai','high','MCP (Model Context Protocol) Basics', `
-<h4>What problem it solves</h4>
-<ul><li>Before MCP, every app wired up custom, bespoke integrations between an LLM and each external tool/data source (N apps × M tools = N×M integrations). MCP standardizes that connection — one protocol, any compliant client can talk to any compliant server.</li></ul>
-<h4>Architecture</h4>
-<ul>
-<li><b>MCP Host</b>: the app the user interacts with (Claude Desktop/Code, an IDE) — contains one or more <b>MCP Clients</b>.</li>
-<li><b>MCP Client</b>: maintains a 1:1 connection to a single MCP Server.</li>
-<li><b>MCP Server</b>: exposes capabilities over the protocol — <b>Tools</b> (callable functions, like function-calling), <b>Resources</b> (readable data — files, DB rows, API responses, addressable by URI), <b>Prompts</b> (reusable prompt templates the server offers).</li>
-</ul>
-<h4>Transport &amp; practical notes</h4>
-<ul>
-<li>Transports: stdio (local process, simplest) or HTTP/SSE (remote servers).</li>
-<li>Discovery: client asks the server "what tools/resources do you have?" at connect time — capabilities are self-describing, no hardcoding needed on the client side.</li>
-<li>Security angle: an MCP server run by a third party is effectively untrusted code with tool access — same "treat tool output/definitions as untrusted" caution applies as with any plugin ecosystem.</li>
-</ul>`],
-
-['ai','med','Multi-Agent Frameworks Overview', `
-<h4>Common shapes</h4>
-<ul>
-<li><b>Sequential/pipeline</b>: agent A's output feeds agent B, feeds agent C — simplest, good when the workflow is genuinely linear (research → draft → edit).</li>
-<li><b>Orchestrator-worker</b>: a coordinator agent decomposes a task and delegates to specialist sub-agents, then synthesizes their results — good for parallelizable or heterogeneous subtasks.</li>
-<li><b>Graph-based</b>: explicit state machine of nodes (agents/functions) and edges (conditional transitions) — best when the flow has branches/loops/retries that a fixed pipeline can't express (this is LangGraph's model).</li>
-<li><b>Peer/conversational</b>: agents "talk" to each other in a shared thread, useful for debate/critique patterns (this is AutoGen's classic model).</li>
-</ul>
-<h4>Framework flavor (conceptual, not memorization)</h4>
-<ul>
-<li><b>OpenAI Agents SDK</b>: lightweight primitives — Agent, handoff, guardrail, session — minimal abstraction over the tool-calling loop.</li>
-<li><b>CrewAI</b>: role-based "crew" of agents with defined roles/goals/tools, good for business-process-style automation.</li>
-<li><b>LangGraph</b>: explicit graph/state machine — most control over flow, steeper learning curve.</li>
-<li><b>AutoGen</b>: conversational multi-agent, agents literally message each other in a group chat abstraction.</li>
-</ul>
-<h4>Interview framing</h4>
-<ul><li>Justify multi-agent by task decomposition benefit, not novelty — a single well-prompted agent with good tools often beats an over-engineered multi-agent system for simple tasks (added coordination overhead &amp; cost).</li></ul>`],
-
-['ai','med','Evaluation, Guardrails & Hallucination', `
-<h4>Hallucination</h4>
-<ul><li>Model states something false/unsupported with confidence — mitigations: grounding via RAG with citations, lower temperature for factual tasks, explicit "say you don't know" instructions, output verification/self-consistency checks (ask the model to verify its own claim against retrieved sources).</li></ul>
-<h4>Guardrails</h4>
-<ul>
-<li><b>Input guardrails</b>: validate/filter user input before it reaches the model (prompt-injection detection, PII scrubbing, topic restriction).</li>
-<li><b>Output guardrails</b>: validate the model's output before acting on it (schema validation, content moderation, "does this tool call look safe" checks) — especially critical before executing agent-triggered side effects.</li>
-</ul>
-<h4>Evaluation approaches</h4>
-<ul>
-<li><b>Golden-set evals</b>: curated input/expected-output pairs, scored automatically (exact match, embedding similarity) or via an <b>LLM-as-judge</b> (another model call that scores/rates the output against a rubric).</li>
-<li><b>Human review</b>: still the gold standard for subjective quality, sampled regularly in production.</li>
-<li><b>Online metrics</b>: task success rate, user correction/retry rate, latency, cost per resolved task — track post-launch, not just pre-launch benchmarks.</li>
-</ul>`],
-
-// ---------------- SYSTEM DESIGN ----------------
-['sysdesign','high','Scalability Basics', `
-<h4>Vertical vs Horizontal scaling</h4>
-<ul>
-<li><b>Vertical</b> (scale up): bigger machine (more CPU/RAM) — simple, but has a hard ceiling and a single point of failure.</li>
-<li><b>Horizontal</b> (scale out): more machines behind a load balancer — near-unlimited scaling, but requires the app to be stateless (or state externalized) and adds coordination complexity.</li>
-</ul>
-<h4>Load balancing</h4>
-<ul>
-<li>Algorithms: round robin, least connections, weighted (by capacity), consistent hashing (for cache/shard-aware routing so the same key mostly hits the same backend).</li>
-<li>L4 (transport-level, fast, no content awareness) vs L7 (application-level, can route by URL/header, does more work).</li>
-</ul>
-<h4>Statelessness</h4>
-<ul><li>Keep servers stateless (session data in a shared store like Redis, not in-process) so any request can hit any instance — this is what makes horizontal scaling &amp; rolling deploys work cleanly.</li></ul>
-<h4>Back-of-envelope habit</h4>
-<ul><li>Always estimate: requests/sec, data size, read:write ratio before designing — it decides whether you even need sharding/caching/queues at all.</li></ul>`],
-
-['sysdesign','high','Caching Strategies', `
-<h4>Patterns</h4>
-<ul>
-<li><b>Cache-aside (lazy loading)</b>: app checks cache first; on miss, reads DB and populates cache. Simple, cache can go stale if DB is written elsewhere without invalidation.</li>
-<li><b>Write-through</b>: writes go to cache and DB together (synchronously) — cache always consistent, but write latency includes both.</li>
-<li><b>Write-behind (write-back)</b>: write to cache immediately, async flush to DB later — fast writes, risk of data loss if cache node dies before flush.</li>
-</ul>
-<h4>Eviction policies</h4>
-<ul><li><b>LRU</b> (evict least-recently-used, most common — HashMap + doubly linked list gives O(1)), <b>LFU</b> (least-frequently-used), <b>TTL</b> (time-based expiry, good for data with natural staleness tolerance).</li></ul>
-<h4>Where to cache</h4>
-<ul>
-<li>Client-side (browser/mobile), CDN (static assets, edge-cached), reverse proxy (Varnish/nginx), application layer (Redis/Memcached), DB query cache.</li>
-</ul>
-<h4>Gotchas</h4>
-<ul>
-<li><b>Cache stampede/thundering herd</b>: many requests miss simultaneously (e.g. on expiry) and all hit the DB at once — mitigate with request coalescing, jittered TTLs, or a lock/single-flight per key.</li>
-<li><b>Cache invalidation</b> is famously one of the two hard problems in CS — prefer short TTLs + explicit invalidation on write over trying to perfectly track every dependency.</li>
-</ul>`],
-
-['sysdesign','high','Database Scaling & CAP Theorem', `
-<h4>Replication</h4>
-<ul>
-<li><b>Leader-follower (primary-replica)</b>: writes go to the leader, reads can be served by replicas (scale reads, adds replication lag risk — read-after-write consistency issues).</li>
-<li><b>Multi-leader/leaderless</b>: writes accepted anywhere, needs conflict resolution (last-write-wins, vector clocks, CRDTs) — used when you need multi-region low-latency writes.</li>
-</ul>
-<h4>Sharding / Partitioning</h4>
-<ul>
-<li>Split data across nodes by a shard key (range-based, hash-based, or directory-based). Hash-based spreads load evenly but kills range queries; range-based supports range queries but risks hot shards.</li>
-<li><b>Consistent hashing</b> minimizes reshuffling when nodes are added/removed (vs naive <code>hash % N</code> which remaps almost everything).</li>
-</ul>
-<h4>CAP Theorem</h4>
-<ul><li>Under a network partition (P, which <i>will</i> happen), you must choose between <b>Consistency</b> (every read sees the latest write) and <b>Availability</b> (every request gets a response) — you can't have both. In practice most systems tune along a spectrum (PACELC extends this: even without a partition, trade Latency vs Consistency).</li></ul>
-<h4>Quorum-based consistency</h4>
-<ul><li><code>W + R &gt; N</code> (write quorum + read quorum &gt; replica count) guarantees you always read at least one up-to-date replica — tunable consistency knob used by Dynamo-style systems (Cassandra, DynamoDB).</li></ul>`],
-
-['sysdesign','high','Message Queues & Async Processing', `
-<h4>Why decouple with a queue</h4>
-<ul><li>Producer and consumer scale independently, absorb traffic spikes (buffer instead of drop/reject), and survive consumer downtime (messages wait in the queue) — trades immediate consistency for resilience/throughput.</li></ul>
-<h4>Queue vs Pub/Sub</h4>
-<ul>
-<li><b>Point-to-point queue</b> (SQS, RabbitMQ default): each message consumed by exactly one consumer — good for task distribution/work queues.</li>
-<li><b>Pub/Sub / log</b> (Kafka, SNS): a message can be delivered to multiple independent subscribers/consumer-groups — good for event broadcasting, multiple downstream systems reacting to the same event.</li>
-</ul>
-<h4>Kafka basics (commonly asked)</h4>
-<ul>
-<li><b>Topic</b> split into <b>partitions</b> for parallelism; each partition is an ordered, append-only log. Ordering is guaranteed only <i>within</i> a partition, not across the whole topic.</li>
-<li><b>Consumer groups</b>: each partition consumed by one consumer within a group (so group size ≤ partition count for full parallelism); different groups get independent copies of the stream.</li>
-<li>Offset tracking lets consumers replay/resume — a key difference from traditional queues where a consumed message is gone.</li>
-</ul>
-<h4>Delivery guarantees</h4>
-<ul><li>At-most-once (may lose), at-least-once (may duplicate — need idempotent consumers), exactly-once (hardest, usually via idempotency keys + transactional writes rather than true magic).</li></ul>`],
-
-['sysdesign','high','API Design: REST, gRPC, GraphQL', `
-<h4>REST</h4>
-<ul><li>Resource-oriented (nouns as URLs, HTTP verbs as actions), stateless, cacheable via HTTP semantics, human-readable JSON — the default for public/browser-facing APIs.</li></ul>
-<h4>gRPC</h4>
-<ul><li>HTTP/2 + Protobuf (binary, strongly typed schema, code-gen'd clients) — much lower latency/payload size, built-in streaming (client/server/bidi) — great for internal service-to-service calls, less ideal for browsers directly.</li></ul>
-<h4>GraphQL</h4>
-<ul><li>Client specifies exactly the fields it needs in one query (avoids over-fetching/under-fetching and N round trips for nested REST resources) — trades simplicity for a more complex server (resolvers, N+1 query risk, caching is harder than REST's URL-based caching).</li></ul>
-<h4>Cross-cutting concerns to mention</h4>
-<ul>
-<li><b>Idempotency</b>: <code>PUT</code>/<code>DELETE</code> should be safely retryable; for <code>POST</code> (create), use an idempotency key so retries don't double-create.</li>
-<li><b>Rate limiting</b>: token bucket (allows bursts up to bucket size) vs leaky bucket (smooths to a constant rate) vs fixed/sliding window counters — token bucket is the most common general-purpose choice.</li>
-<li><b>Versioning</b>: URL (<code>/v2/</code>), header, or content-negotiation based — plan for it from day one, breaking changes are inevitable.</li>
-<li><b>Pagination</b>: offset-based (simple, breaks with concurrent inserts) vs cursor/keyset-based (stable under mutation, preferred at scale).</li>
-</ul>`],
-
-['sysdesign','med','Consistency & Availability Tradeoffs', `
-<h4>Consistency models (spectrum, not binary)</h4>
-<ul>
-<li><b>Strong consistency</b>: every read sees the latest write, always — needs coordination (consensus), costs latency.</li>
-<li><b>Eventual consistency</b>: replicas converge "eventually" if writes stop — reads may be stale temporarily, much better availability/latency.</li>
-<li><b>Read-your-writes / session consistency</b>: a middle ground — a user always sees their own writes, even if other users might see stale data briefly (common for social feeds, comments).</li>
-</ul>
-<h4>Consensus (when strong consistency is required across nodes)</h4>
-<ul><li>Paxos/Raft: get a majority of nodes to agree on a value/order before committing — underlies leader election in etcd/ZooKeeper, and strongly-consistent distributed databases.</li></ul>
-<h4>Practical framing for interviews</h4>
-<ul>
-<li>Ask "does this data need strong consistency?" per-entity, not for the whole system — e.g. a bank balance needs strong consistency; a "like count" or "last seen" timestamp is fine eventually consistent.</li>
-<li>Availability-favoring systems (Cassandra, DynamoDB) vs consistency-favoring (traditional RDBMS, Spanner/CockroachDB which use synchronized clocks/consensus to get both mostly).</li>
-</ul>`],
-
-['sysdesign','med','Common Design Blueprints', `
-<h4>URL Shortener</h4>
-<ul><li>Base62-encode an auto-incrementing ID (or hash + collision check) → short code; store <code>{code: longUrl}</code> in a KV store; redirect via 301/302; cache hot codes; consider custom aliases &amp; expiry.</li></ul>
-<h4>Rate Limiter</h4>
-<ul><li>Token bucket per user/API-key stored in Redis (atomic <code>INCR</code> + TTL, or a Lua script for atomicity) — return <code>429</code> + <code>Retry-After</code> when exceeded; for distributed rate limiting across many app servers, the counter store must be centralized/shared.</li></ul>
-<h4>Chat System</h4>
-<ul><li>WebSocket (or long-polling fallback) for real-time delivery; message persistence in a DB partitioned by conversation; presence service (online/offline) via heartbeats in a fast KV store; fan-out on write (push to online recipients) vs fan-out on read (pull, for very large groups).</li></ul>
-<h4>News Feed</h4>
-<ul><li><b>Fan-out on write</b>: precompute each follower's feed on post (fast reads, expensive for celebrities with millions of followers). <b>Fan-out on read</b>: merge sources at read time (cheap writes, expensive reads). Real systems hybridize (fan-out on write except for very high-follower accounts).</li></ul>
-<h4>Interview process reminder</h4>
-<ul><li>Clarify requirements &amp; scale first → back-of-envelope numbers → high-level components → deep-dive 1-2 areas the interviewer probes → discuss bottlenecks/trade-offs explicitly.</li></ul>`],
-
-['sysdesign','med','Mobile-Specific System Design', `
-<h4>Offline-first</h4>
-<ul><li>Local DB (Room/SQLite/Realm) is the source of truth for the UI; sync engine reconciles with server in the background — UI never blocks on network. Queue writes locally when offline, replay/sync when connectivity returns.</li></ul>
-<h4>Sync strategies</h4>
-<ul>
-<li><b>Last-write-wins</b>: simplest, can silently lose concurrent edits.</li>
-<li><b>Operational transforms / CRDTs</b>: for true concurrent-edit merging (collaborative docs) — significant complexity, only worth it if concurrent edits are common.</li>
-<li><b>Sync tokens/cursors</b>: server returns a cursor with each sync response; client sends it back next time to fetch only what changed (delta sync) instead of re-pulling everything.</li>
-</ul>
-<h4>Push notifications</h4>
-<ul><li>App server → FCM/APNs → device. Payload should be minimal (a signal to sync), not the full data — avoids notification payload/data going stale or exceeding platform size limits; fetch fresh data on receipt instead.</li></ul>
-<h4>API design for mobile specifically</h4>
-<ul>
-<li>Minimize round trips (mobile networks are high-latency, unreliable) — batch/aggregate endpoints (BFF pattern - Backend for Frontend) over many small REST calls.</li>
-<li>Design for retries &amp; idempotency aggressively — mobile networks drop mid-request constantly, client can't always tell if a request actually succeeded server-side.</li>
-<li>Version your API defensively — you can't force-update every install; old app versions may talk to new backends for a long tail of time.</li>
-</ul>`],
-
-// ---------------- GO PATTERNS ----------------
-['go','high','Go Basics: Goroutines, Channels, Defer', `
-<pre><code>go doWork()                          // starts a goroutine (lightweight, multiplexed onto OS threads by the runtime scheduler)
-
-ch := make(chan int)                 // unbuffered channel: send blocks until a receiver is ready (synchronization point)
-ch := make(chan int, 5)              // buffered: send blocks only once buffer is full
-
-go func() { ch <- 42 }()
-val := <-ch                          // receive
-
-func process() {
-  f, _ := os.Open("file")
-  defer f.Close()                    // runs when the enclosing function returns, LIFO order for multiple defers
-  ...
-}</code></pre>
-<h4>Core mental model</h4>
-<ul>
-<li>"Don't communicate by sharing memory; share memory by communicating" — channels are Go's idiomatic concurrency primitive, preferred over manual locking where it fits.</li>
-<li>Goroutines are cheap (~2KB starting stack, grows dynamically) — spawning thousands is normal, unlike OS threads.</li>
-<li><code>select</code> lets a goroutine wait on multiple channel operations at once, picking whichever is ready (like a switch for channels); a <code>default</code> case makes it non-blocking.</li>
-</ul>`],
-
-['go','high','Go Concurrency Patterns', `
-<h4>Worker pool</h4>
-<pre><code>jobs := make(chan int, 100)
-results := make(chan int, 100)
-for w := 0; w < numWorkers; w++ {
-  go func() {
-    for j := range jobs {          // ranges until jobs channel is closed
-      results <- process(j)
-    }
-  }()
-}
-for _, j := range work { jobs <- j }
-close(jobs)</code></pre>
-<h4>Fan-out / Fan-in</h4>
-<ul><li><b>Fan-out</b>: multiple goroutines read from the same channel to parallelize work. <b>Fan-in</b>: multiple goroutines' output channels merged into one via a merging goroutine (or <code>sync.WaitGroup</code> + a shared results channel closed after all producers finish).</li></ul>
-<h4>sync.WaitGroup</h4>
-<pre><code>var wg sync.WaitGroup
-for _, item := range items {
-  wg.Add(1)
-  go func(it Item) { defer wg.Done(); handle(it) }(item)
-}
-wg.Wait()</code></pre>
-<h4>context.Context</h4>
-<ul><li>Carries cancellation signals, deadlines, and request-scoped values across API/goroutine boundaries — <code>ctx.Done()</code> channel closes on cancel/timeout, every long-running function should select on it to exit early and avoid goroutine leaks.</li></ul>`],
-
-['go','med','Go Error Handling Idioms', `
-<pre><code>func doThing() (Result, error) {
-  r, err := step1()
-  if err != nil {
-    return Result{}, fmt.Errorf("doThing: step1 failed: %w", err)   // %w wraps, preserves the chain
-  }
-  return r, nil
-}
-
-var ErrNotFound = errors.New("not found")
-
-if errors.Is(err, ErrNotFound) { ... }        // checks the wrapped chain for a sentinel error
-var myErr *MyError
-if errors.As(err, &myErr) { ... myErr.Code }  // extracts a concrete error type from the chain</code></pre>
-<h4>Philosophy</h4>
-<ul>
-<li>Errors are values, returned explicitly, checked at every call site — no exceptions/try-catch for normal control flow. This is deliberate: makes failure paths visible in the code, not hidden in a stack unwind.</li>
-<li><code>panic</code>/<code>recover</code> exist but are reserved for truly unrecoverable programmer errors (nil deref, out-of-bounds) — not for expected failure conditions like "file not found" or "network timeout".</li>
-<li><code>defer</code> + <code>recover()</code> inside it is the pattern for converting a panic into a returned error at a boundary (e.g. an HTTP handler middleware that shouldn't crash the whole server on one bad request).</li>
-</ul>`],
-
-['go','med','Interfaces & Composition in Go', `
-<pre><code>type Reader interface { Read(p []byte) (n int, err error) }   // implicit implementation: no "implements" keyword
-
-type File struct{}
-func (f File) Read(p []byte) (int, error) { ... }   // File now satisfies Reader automatically
-
-type Base struct { Name string }
-func (b Base) Greet() string { return "hi " + b.Name }
-type Derived struct { Base }                          // embedding = composition, "inherits" Base's methods
-d := Derived{Base{Name:"x"}}
-d.Greet()                                              // promoted method call</code></pre>
-<h4>Key differences from Java/Kotlin</h4>
-<ul>
-<li>Interfaces are satisfied <b>structurally/implicitly</b> — any type with matching methods satisfies the interface, no explicit declaration. Enables defining a small interface right where it's <i>consumed</i>, not where the type is defined (very different from Java's "class declares what it implements").</li>
-<li>No classical inheritance — <b>struct embedding</b> gives composition with method/field promotion, explicitly favoring "composition over inheritance" at the language level.</li>
-<li>Prefer small interfaces (often single-method: <code>Reader</code>, <code>Writer</code>, <code>Stringer</code>) — "the bigger the interface, the weaker the abstraction" is a common Go proverb.</li>
-</ul>`],
-
-['go','med','Common Design Patterns in Go', `
-<h4>Functional options</h4>
-<pre><code>type Server struct { port int; timeout time.Duration }
-type Option func(*Server)
-func WithPort(p int) Option { return func(s *Server) { s.port = p } }
-func WithTimeout(t time.Duration) Option { return func(s *Server) { s.timeout = t } }
-
-func NewServer(opts ...Option) *Server {
-  s := &Server{port: 8080, timeout: 30 * time.Second}   // sensible defaults
-  for _, opt := range opts { opt(s) }
-  return s
-}
-srv := NewServer(WithPort(9090))   // idiomatic Go replacement for Java's Builder pattern</code></pre>
-<h4>Singleton via sync.Once</h4>
-<pre><code>var once sync.Once
-var instance *Config
-func GetConfig() *Config {
-  once.Do(func() { instance = loadConfig() })   // guaranteed to run exactly once, thread-safe
-  return instance
-}</code></pre>
-<h4>Other idioms worth naming</h4>
-<ul>
-<li><b>Middleware/decorator</b>: <code>func(http.Handler) http.Handler</code> — wrap handlers to add logging/auth/recovery, chainable.</li>
-<li><b>Table-driven tests</b>: a slice of <code>{input, expected}</code> structs looped over in one test function — the idiomatic Go test pattern instead of many near-duplicate test functions.</li>
-</ul>`],
-
-['go','med','Go Memory Model & Sync Basics', `
-<h4>Channels vs Mutex</h4>
-<ul>
-<li>Use a <b>channel</b> when passing ownership of data between goroutines, or coordinating/signaling (pipelines, worker pools, "done" signals).</li>
-<li>Use a <b>Mutex</b> (<code>sync.Mutex</code>/<code>sync.RWMutex</code>) when protecting shared in-memory state that many goroutines read/write in place (e.g. an in-process cache) — often simpler and faster than routing all access through a channel.</li>
-</ul>
-<pre><code>type Counter struct {
-  mu sync.Mutex
-  n  int
-}
-func (c *Counter) Inc() {
-  c.mu.Lock()
-  defer c.mu.Unlock()
-  c.n++
-}</code></pre>
-<h4>Go memory model guarantee</h4>
-<ul><li>Similar spirit to Java's JMM: without a happens-before relationship (channel send/receive, mutex lock/unlock, <code>sync.Once</code>, goroutine start/WaitGroup) there's no guarantee one goroutine observes another's writes — the race detector (<code>go test -race</code>, <code>go run -race</code>) is a standard tool to catch violations before they cause flaky prod bugs.</li></ul>
-<h4>context timeouts</h4>
-<pre><code>ctx, cancel := context.WithTimeout(parent, 2*time.Second)
-defer cancel()
-select {
-case res := <-doAsync(ctx):
-  handle(res)
-case <-ctx.Done():
-  log.Println("timed out:", ctx.Err())
-}</code></pre>`],
+// [topic, question, answer, block]
+['android','What is the Activity lifecycle order, and which callback must return fast?',
+ 'onCreate → onStart → onResume (visible + interactive) → onPause → onStop → onDestroy. <code>onPause</code> must return quickly (release camera/sensors, commit lightweight state) since the incoming Activity cannot resume until it does. Rotation destroys &amp; recreates the Activity by default.', 1],
+['kotlin','What is the difference between <code>?.</code>, <code>!!</code>, <code>?:</code>, <code>lateinit</code>, and <code>by lazy</code>?',
+ '<code>?.</code> safe-calls (null-propagates). <code>!!</code> force-unwraps, throws NPE — avoid in production code. <code>?:</code> is the elvis default. <code>lateinit var</code> is for a non-null var initialized later (throws if read too early). <code>by lazy</code> is for a val computed once on first access, thread-safe by default.', 1],
+['java','What does <code>synchronized</code> guarantee that <code>volatile</code> does not, and vice versa?',
+ '<code>synchronized</code> gives mutual exclusion AND visibility (happens-before on unlock/lock). <code>volatile</code> gives visibility only (always read the latest write) and blocks reordering around it — it does NOT make compound actions like <code>i++</code> atomic.', 1],
+['dsa','How do you recognize a sliding-window problem, and how do fixed vs. variable windows differ?',
+ 'Keywords: contiguous subarray/substring, longest/shortest/count under a constraint. Fixed window: slide by adding right / removing left, update an aggregate incrementally. Variable window: grow right until the constraint breaks, then shrink left until valid again — O(n) instead of a naive O(n²).', 1],
+['algo','Why is quicksort worst-case O(n²), and how do you avoid it in practice?',
+ 'Already-sorted input plus a naive pivot choice (always first/last element) creates maximally unbalanced partitions. Fix with a randomized or median-of-three pivot so adversarial worst-case input becomes very unlikely.', 1],
+['ai','What does an LLM\'s "temperature" setting actually control?',
+ 'The randomness of next-token sampling. Near 0 is close to always picking the highest-probability token (deterministic, best for factual/code tasks). Higher values flatten the distribution so less-likely tokens get chosen more often (more diverse, more error-prone).', 1],
+
+['sysdesign','Vertical vs horizontal scaling — what is the real trade-off, and what does horizontal scaling require of the app?',
+ 'Vertical (bigger machine): simple, but hits a hard ceiling and stays a single point of failure. Horizontal (more machines + load balancer): scales further, but requires the app to be stateless — session data lives in a shared store like Redis, not in-process.', 2],
+['go','Unbuffered vs buffered channel — what is the actual blocking behavior of each?',
+ 'Unbuffered: a send blocks until a receiver is ready at that exact moment (a synchronization rendezvous). Buffered (size N): a send only blocks once the buffer already holds N items; a receive blocks only when the buffer is empty.', 2],
+['android','How does the Fragment lifecycle differ from the Activity lifecycle?',
+ 'Adds <code>onAttach</code>, <code>onCreateView</code>/<code>onViewCreated</code>, and <code>onDestroyView</code> (the view can die while the Fragment instance survives, e.g. on the back stack) before <code>onDestroy</code>/<code>onDetach</code>. Always null out view-binding refs in <code>onDestroyView</code>; observe LiveData/Flow via <code>viewLifecycleOwner</code>, not the Fragment itself.', 2],
+['kotlin','When do you use <code>let</code> vs <code>apply</code> vs <code>also</code> vs <code>run</code> vs <code>with</code>?',
+ '<code>let</code> (it→result): null-check + transform. <code>apply</code> (this→object): configure &amp; return the same object (builder style). <code>also</code> (it→object): a side-effect mid-chain (logging). <code>run</code> (this→result): configure + compute a result. <code>with</code> (this→result): grouped calls on a known non-null object, not called as an extension.', 2],
+['java','Runnable vs Callable, and why prefer submitting to an <code>ExecutorService</code> over <code>new Thread()</code>?',
+ '<code>Callable&lt;V&gt;</code> returns a value and can throw checked exceptions; <code>Runnable</code> cannot. An <code>ExecutorService</code> reuses a bounded thread pool instead of spawning unbounded raw threads, controlling resource use, and gives you <code>Future</code>/<code>CompletableFuture</code> for composition.', 2],
+['dsa','What does the fast/slow pointer technique detect, and how do you find where a cycle starts?',
+ "Floyd's cycle detection: slow moves 1 step, fast moves 2 — if a cycle exists they must eventually meet. To find the start node: reset one pointer to head, advance both by 1 step at a time — they meet again exactly at the cycle's start.", 2],
+
+['algo','Why is mergesort sometimes preferred over quicksort despite usually being "slower" in practice?',
+ 'Mergesort guarantees O(n log n) always and is stable (preserves relative order of equal elements) — needed when sorting by a secondary key, or for linked lists where quicksort\'s in-place partitioning loses its advantage (no random access).', 3],
+['ai','Few-shot prompting vs chain-of-thought — what does each actually fix?',
+ 'Few-shot: shows 2-5 example input/output pairs to pin down the desired FORMAT/pattern. Chain-of-thought: asks the model to reason step-by-step before answering, improving accuracy on multi-step logic/math. Different problems — often combined.', 3],
+['sysdesign','Cache-aside vs write-through vs write-behind — what is the failure mode of each?',
+ 'Cache-aside: read populates the cache on a miss; can go stale if the DB is written elsewhere without invalidation. Write-through: writes hit cache+DB together, always consistent, but pays both latencies on every write. Write-behind: writes hit the cache first, flushed to DB async — fast, but risks data loss if the cache node dies before flushing.', 3],
+['go','What does Go\'s <code>select</code> do, and how do you make it non-blocking?',
+ '<code>select</code> lets a goroutine wait on multiple channel operations at once, proceeding with whichever is ready first (random choice if several are ready). Adding a <code>default</code> case makes it non-blocking — it falls through immediately if nothing is ready.', 3],
+['android','How do you survive a configuration change vs. process death?',
+ 'ViewModel survives rotation (cleared only when the owner really finishes) but NOT process death. <code>onSaveInstanceState</code>/<code>SavedStateHandle</code> survives both — pair the two for a complete solution.', 3],
+['kotlin','What is special about a <code>sealed class</code>, and why pair it with <code>when</code>?',
+ 'Subclassing is restricted to the same module/file, so the compiler can prove a <code>when</code> over it is exhaustive — ideal for modeling a fixed set of UI/Result states (Loading/Success/Error) without a missing-branch bug slipping through.', 3],
+
+['java','Name three <code>java.util.concurrent</code> coordination primitives and when you would reach for each.',
+ '<code>CountDownLatch</code> — a one-time gate; N threads wait for a count to hit zero (not reusable). <code>CyclicBarrier</code> — a reusable rendezvous point where N threads wait for each other. <code>Semaphore</code> — bounds concurrent access to a resource pool via permits.', 4],
+['dsa','What is "binary search on the answer," and how do you recognize it applies?',
+ 'When a yes/no predicate over a range of possible answers is monotonic (all false, then all true), binary search that answer space directly instead of the input array — e.g. "minimum capacity to ship in D days," "Koko eating bananas."', 4],
+['algo','Why does Dijkstra\'s algorithm fail with negative edge weights, and what do you use instead?',
+ 'Dijkstra greedily finalizes a node\'s shortest distance once it is popped from the priority queue, assuming no future edge can improve it — a negative edge can violate that assumption. Use Bellman-Ford instead (O(VE), and it also detects negative cycles).', 4],
+['ai','Walk through the RAG (retrieval-augmented generation) pipeline in one breath.',
+ 'Ingest: chunk documents → embed each chunk → store in a vector DB. Query: embed the question → similarity search for the top-K chunks → inject them into the prompt as context → the LLM answers grounded in that context (ideally with citations back to the source).', 4],
+['sysdesign','State the CAP theorem correctly — what is actually being traded, and when?',
+ 'Only under a network partition (P, which will happen) must you choose between Consistency (every read sees the latest write) and Availability (every request gets a response) — you cannot have both then. It says nothing about the no-partition case; PACELC extends it with a latency-vs-consistency trade-off even without a partition.', 4],
+['go','<code>errors.Is</code> vs <code>errors.As</code> — what is each actually checking?',
+ '<code>errors.Is</code> checks whether a specific sentinel error value appears anywhere in the wrapped error chain (identity match). <code>errors.As</code> extracts a concrete error TYPE from the chain into a target variable so you can read its fields (e.g. an error code).', 4],
+
+['android','What triggers recomposition in Jetpack Compose, and how do you avoid excess of it?',
+ 'Reading a <code>State</code> object inside a composable subscribes it to changes; only composables that actually read the changed state recompose. Avoid excess recomposition from unstable lambda/class params and missing <code>key()</code>s in <code>LazyColumn</code> items; use <code>derivedStateOf</code> to recompute only when the true inputs change.', 5],
+['kotlin','<code>data class</code> vs a regular class — what gets auto-generated, and how does equality differ?',
+ '<code>data class</code> auto-generates <code>equals</code>/<code>hashCode</code> (structural, by properties), <code>toString</code>, <code>copy()</code>, and <code>componentN()</code> for destructuring. A regular class uses reference equality unless you override <code>equals</code>/<code>hashCode</code> yourself.', 5],
+['java','Why is <code>ConcurrentHashMap.putIfAbsent</code> important instead of <code>containsKey</code> + <code>put</code>?',
+ 'Individual <code>ConcurrentHashMap</code> operations are atomic, but two separate calls (check-then-act) are not — another thread can interleave between them. <code>putIfAbsent</code>/<code>compute</code>/<code>merge</code> perform the check-and-set atomically in a single call.', 5],
+['dsa','BFS vs DFS — when do you pick each?',
+ 'BFS: shortest path / minimum steps in an unweighted graph, exploring level by level via a queue. DFS: connectivity, cycle detection, topological order, and exhaustive path exploration via recursion/stack.', 5],
+['algo','How does Kahn\'s algorithm perform topological sort, and how does it detect a cycle?',
+ 'BFS using in-degrees: push all in-degree-0 nodes to a queue, repeatedly pop and decrement neighbors\' in-degree, pushing any new zeros. If fewer than V nodes get processed by the end, the remaining nodes are part of a cycle.', 5],
+['ai','Walk through the mechanics of a "tool call" / function-calling loop.',
+ 'You send the model messages plus tool schemas; it replies with either final text or a structured tool_call (name + args); your code executes the real function and appends the result as a new message; repeat until it returns final text. No magic — it is structured text the model is trained to emit.', 5],
+
+['sysdesign','Point-to-point queue vs pub/sub, and what does a Kafka partition actually guarantee?',
+ 'Point-to-point (SQS-style): each message is consumed by exactly one consumer. Pub/sub (Kafka/SNS): the same message can go to multiple independent consumer groups. Kafka guarantees ordering only WITHIN a partition, never across a whole topic.', 6],
+['go','How does Go decide whether a type satisfies an interface?',
+ 'Structurally and implicitly — any type whose method set matches the interface satisfies it automatically, with no "implements" declaration. This lets you define a small interface right where it is consumed, rather than where the type is defined.', 6],
+['android','<code>LaunchedEffect</code> vs <code>DisposableEffect</code> vs <code>rememberCoroutineScope</code> — when do you use each?',
+ '<code>LaunchedEffect(key)</code>: runs a coroutine tied to composition, restarts on key change. <code>DisposableEffect(key)</code>: for non-Compose cleanup (listeners) via <code>onDispose{}</code>. <code>rememberCoroutineScope()</code>: a scope for launching coroutines from callbacks (click handlers), not tied to recomposition.', 6],
+['kotlin','What does <code>inline</code> + <code>reified</code> actually buy you?',
+ '<code>inline</code> copies the lambda/function body to the call site (avoids a Function object allocation, allows a non-local <code>return</code> from inside the lambda). <code>reified</code> — only legal on an inline function — preserves the generic type at runtime, e.g. so you can write <code>x is T</code> instead of needing a <code>Class&lt;T&gt;</code> parameter.', 6],
+['java','What is the JMM "happens-before" relationship, in plain terms?',
+ 'Without an explicit happens-before edge (unlock→lock, volatile write→read, <code>Thread.start()</code>→child\'s first action, child\'s last action→<code>Thread.join()</code> return), one thread has NO guarantee it ever sees another thread\'s writes, due to caching and instruction reordering.', 6],
+['dsa','What is the one defining line in every backtracking template?',
+ 'The "undo" step — add a choice, recurse, then remove it before trying the next choice. Backtracking is brute force with early pruning; TLE vs. AC usually comes down to how early you can invalidate a bad branch.', 6],
+
+['algo','State the LCS and Edit Distance recurrences in one line each.',
+ "LCS: if s1[i-1]==s2[j-1], dp[i][j]=dp[i-1][j-1]+1, else max(dp[i-1][j], dp[i][j-1]). Edit Distance: if equal, dp[i][j]=dp[i-1][j-1], else 1+min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) (delete, insert, replace).", 7],
+['ai','What defines an "agent" versus a single LLM call, and what is ReAct?',
+ 'An agent runs a loop — observe, decide (possibly call a tool), act, observe the result, repeat — until a goal or termination condition is met. ReAct interleaves explicit reasoning ("Thought: …") with actions and observations, making the plan legible and letting the model course-correct on real results.', 7],
+['sysdesign','REST vs gRPC vs GraphQL — pick the right one for: a public browser API, internal service-to-service calls, and complex nested client queries.',
+ 'Public API: REST — cacheable, human-readable, universal. Internal service-to-service: gRPC — HTTP/2 + Protobuf, low latency/payload, built-in streaming. Complex nested queries: GraphQL — the client specifies exactly the fields it needs in one round trip, avoiding REST\'s over/under-fetching on nested resources.', 7],
+['go','What is the idiomatic Go replacement for the Builder pattern?',
+ 'Functional options: a <code>NewX(opts ...Option)</code> constructor where each <code>Option</code> is a <code>func(*X)</code> that mutates a field, applied over sane defaults — e.g. <code>NewServer(WithPort(9090))</code>.', 7],
+['android','Explain Hilt\'s core wiring: <code>@Inject</code>, <code>@Module</code>/<code>@Provides</code>, and scopes.',
+ '<code>@Inject constructor</code> tells Hilt how to build a class directly. <code>@Module</code> + <code>@Provides</code> (or <code>@Binds</code>) supplies types you cannot annotate yourself (Retrofit, interfaces). <code>@Singleton</code> = app lifetime; <code>@ViewModelScoped</code>/<code>@ActivityScoped</code> tie to that component — match the scope to the real lifetime to avoid leaks or duplicate instances.', 7],
+['kotlin','List vs Sequence — what is the actual performance difference?',
+ 'List operations (<code>map</code>/<code>filter</code>) are eager — each step allocates a full intermediate list. Sequence is lazy — operations fuse and run element-by-element, only on a terminal op (<code>toList</code>/<code>first</code>/<code>sum</code>). Prefer Sequence for long, chained pipelines over large collections.', 7],
+
+['java','How does <code>HashMap</code> handle collisions, and when does it switch to a tree?',
+ "Colliding entries in a bucket form a linked list; Java 8+ converts a bucket's list to a red-black tree once its length reaches 8, giving O(log n) worst-case lookup instead of O(n).", 8],
+['dsa','How do you recognize a DP problem, and what should you define first?',
+ 'Optimal substructure + overlapping subproblems (naive recursion recomputes the same state repeatedly). Define the state precisely first — what does <code>dp[i]</code> or <code>dp[i][j]</code> mean? — before writing the recurrence.', 8],
+['algo','Inorder / Preorder / Postorder — which do you use for what?',
+ 'Inorder (L, node, R): sorted order for a BST. Preorder (node, L, R): serialize or copy a tree. Postorder (L, R, node): compute subtree-dependent values (height, sum) or safely delete nodes bottom-up.', 8],
+['ai','In MCP, what is the difference between a Tool, a Resource, and a Prompt?',
+ 'Tool = a callable function (like function-calling). Resource = readable data addressable by a URI (a file, DB row, API response). Prompt = a reusable prompt template the server offers. All three are discovered dynamically by the client at connect time — no hardcoding needed.', 8],
+['sysdesign','Token bucket vs leaky bucket for rate limiting — what is the practical difference?',
+ 'Token bucket allows bursts up to the bucket\'s capacity, then throttles to the refill rate — the most common general-purpose choice. Leaky bucket smooths output to a strictly constant rate regardless of how bursty the input is.', 8],
+['go','When do you use a channel vs a Mutex for shared state in Go?',
+ 'Channel: passing ownership of data between goroutines, or coordination/signaling (pipelines, "done" signals). Mutex: protecting shared in-place state many goroutines read/write directly (an in-process counter/cache) — often simpler and faster than routing everything through a channel.', 8],
+
+['android','What are the top causes of memory leaks in Android, and how do you catch them?',
+ 'Static references to an Activity/View/Context; non-static inner classes/Handlers holding an implicit outer reference beyond its lifetime; unregistered listeners/observers. Catch them with LeakCanary in debug builds and Android Studio\'s Memory Profiler for heap dumps.', 9],
+['kotlin','<code>launch</code> vs <code>async</code> — how do result and exception handling differ?',
+ '<code>launch</code>: fire-and-forget, returns a <code>Job</code>, exceptions propagate immediately to the parent scope. <code>async</code>: returns a <code>Deferred&lt;T&gt;</code>, get the result via <code>await()</code>; its exception is held until <code>await()</code> is called (unless inside <code>supervisorScope</code>, which isolates child failures).', 9],
+['java','What are the four Coffman conditions for deadlock, and what is the standard fix?',
+ 'Mutual exclusion, hold-and-wait, no preemption, circular wait — all four must hold simultaneously. The standard fix targets circular wait: always acquire multiple locks in the same global order across every thread.', 9],
+['dsa','When do you reach for a heap instead of sorting the whole array?',
+ '"Top K" / "Kth largest" problems: maintain a heap of size K (a min-heap for the K largest) — O(n log K), which beats a full O(n log n) sort when K is much smaller than n. Also used for merging K sorted lists via a min-heap of the list heads.', 9],
+['algo','How do you find the LCA differently in a general binary tree vs. a BST?',
+ 'General tree: recursive — if both subtrees return non-null, the current node is the LCA; otherwise propagate the non-null side up (O(n)). BST: walk down using ordering — go left/right based on where both targets fall relative to the node, no need to search both subtrees (O(h)).', 9],
+['ai','Name the four common multi-agent orchestration shapes.',
+ 'Sequential/pipeline (A\'s output feeds B feeds C); orchestrator-worker (a coordinator delegates to specialists, then synthesizes); graph-based (an explicit state machine with branches/loops, e.g. LangGraph); peer/conversational (agents message each other directly, e.g. AutoGen).', 9],
+
+['sysdesign','Fan-out on write vs fan-out on read for a news feed — when does each break down?',
+ 'Fan-out on write: precompute every follower\'s feed at post time — fast reads, but breaks down for accounts with millions of followers (huge write amplification). Fan-out on read: merge sources at read time — cheap writes, expensive reads at scale. Real systems hybridize the two.', 10],
+['go','What does <code>context.WithTimeout</code> give you, and why must you always call <code>cancel()</code>?',
+ 'A <code>ctx.Done()</code> channel that closes when the timeout fires OR when <code>cancel()</code> is called — long-running work should select on it to exit early. You must call <code>cancel()</code> (usually via <code>defer</code>) even on the success path, or the timer keeps the context\'s resources alive until it fires on its own.', 10],
+['dsa','What are Union-Find\'s two core operations, and why do both optimizations matter together?',
+ '<code>find(x)</code> with path compression, and <code>union(x,y)</code> by rank/size. Either alone gives O(log n) amortized; together they give O(α(n)) — effectively constant for any realistic n.', 10],
+['algo','What is the trick behind <code>x &amp; (x-1)</code>, and where is it used?',
+ 'It clears the lowest set bit of x. Used to count set bits (Brian Kernighan\'s algorithm — iterate until 0, counting steps) and to check for a power of two (<code>x &amp; (x-1) == 0</code> for x &gt; 0).', 10],
+['ai','What is the single best lever against hallucination, and what is an LLM-as-judge?',
+ 'Grounding via RAG with citations (forcing answers to be traceable to real source text) beats just "asking it to be careful." LLM-as-judge means using a separate model call to score/rate another model\'s output against a rubric — for scalable automated evaluation instead of manual review alone.', 10],
+['sysdesign','Mobile API design: why does idempotency matter more on mobile than on a typical web backend?',
+ 'Mobile networks drop mid-request constantly, and the client often cannot tell whether a request actually succeeded server-side before the drop — without an idempotency key, a client\'s automatic retry can double-create or double-charge.', 10],
 ];
 
-const CARDS = RAW.map((r,i)=>({id:`${r[0]}-${i}`, t:r[0], p:r[1], title:r[2], min:20, html:r[3]}));
+const CARDS = RAW.map((r,i)=>({id:`c${i}`, t:r[0], q:r[1], a:r[2], block:r[3]}));
+const NUM_BLOCKS = 10;
+const BLOCK_META = {
+  1:"Tier 1 — the single highest-yield question per domain. If you only have one 2-hour slot before an interview, do this block.",
+  2:"Tier 1, continued — still core fundamentals; rounds out the basics across System Design and Go alongside Android/Kotlin/Java/DSA.",
+  3:"Core trade-offs — the “why this over that” comparisons interviewers use to separate memorized answers from real understanding.",
+  4:"Core trade-offs, continued — concurrency primitives, search-space reasoning, and distributed-systems fundamentals.",
+  5:"Applied depth — where “I know the concept” has to become “I can reason about it out loud, live.”",
+  6:"Applied depth, continued — messaging systems, JVM memory guarantees, and Go idioms that separate mid from senior.",
+  7:"Senior-leaning territory — algorithmic recurrences, agentic reasoning, and API-design judgment calls.",
+  8:"Senior-leaning, continued — data-structure internals and the modern AI-stack architecture (MCP).",
+  9:"Polish — the details that turn a good answer into an obviously-experienced one.",
+  10:"Polish, continued — edge cases and nuance that come up in the last 20 minutes of a strong interview.",
+};
 
 /* ============ STORAGE ============ */
-const LS = {
-  done: 'ipsg_done_v2',
-  session: 'ipsg_session_v2',
-  rotation: 'ipsg_rotation_v2',
-  weekly: 'ipsg_weekly_v2',
-};
+const LS = { done: 'ipsg_done_v3', selBlock: 'ipsg_selblock_v3', weekly: 'ipsg_weekly_v3' };
 
 function loadDone(){ try{return JSON.parse(localStorage.getItem(LS.done)||'{}');}catch(e){return {};} }
 function saveDone(d){ localStorage.setItem(LS.done, JSON.stringify(d)); }
-
-function loadRotation(){
-  try{ return JSON.parse(localStorage.getItem(LS.rotation)) || {cursors:{}, startTopicIdx:0}; }
-  catch(e){ return {cursors:{}, startTopicIdx:0}; }
-}
-function saveRotation(r){ localStorage.setItem(LS.rotation, JSON.stringify(r)); }
-
-function loadSession(){ try{ return JSON.parse(localStorage.getItem(LS.session)); }catch(e){ return null; } }
-function saveSession(s){ localStorage.setItem(LS.session, JSON.stringify(s)); }
 
 function getWeekKey(d=new Date()){
   const date = new Date(d); date.setHours(0,0,0,0);
@@ -1325,47 +326,21 @@ function loadWeekly(){
 }
 function saveWeekly(w){ localStorage.setItem(LS.weekly, JSON.stringify(w)); }
 
-/* ============ SESSION GENERATION ============ */
-function generateSession(hours){
-  const count = Math.max(1, Math.round(hours*3));
-  const done = loadDone();
-  const rotation = loadRotation();
-  const topicIds = TOPICS.map(t=>t.id);
-  const n = topicIds.length;
-  const byTopic = {}; topicIds.forEach(id=> byTopic[id] = CARDS.filter(c=>c.t===id));
+function cardsForBlock(n){ return CARDS.filter(c=>c.block===n); }
+function blockDoneCount(n, done){ return cardsForBlock(n).filter(c=>done[c.id]).length; }
 
-  let queue = [];
-  let ti = rotation.startTopicIdx % n;
-  let attemptsWithoutAdd = 0;
-  let guard = 0;
-  while(queue.length < count && attemptsWithoutAdd < n && guard < 5000){
-    guard++;
-    const topic = topicIds[((ti % n)+n)%n];
-    const list = byTopic[topic];
-    let cursor = rotation.cursors[topic] || 0;
-    let foundIdx = -1;
-    for(let k=0;k<list.length;k++){
-      const idx = (cursor+k) % list.length;
-      if(!done[list[idx].id] && !queue.find(q=>q.id===list[idx].id)){ foundIdx = idx; break; }
-    }
-    if(foundIdx>=0){
-      queue.push(list[foundIdx]);
-      rotation.cursors[topic] = (foundIdx+1) % list.length;
-      attemptsWithoutAdd = 0;
-    } else {
-      attemptsWithoutAdd++;
-    }
-    ti++;
-  }
-  rotation.startTopicIdx = (rotation.startTopicIdx + 1) % n;
-  saveRotation(rotation);
-  return {hours, generatedAt: new Date().toISOString(), cardIds: queue.map(c=>c.id)};
+function pickDefaultBlock(){
+  const done = loadDone();
+  for(let n=1;n<=NUM_BLOCKS;n++){ if(blockDoneCount(n,done) < 6) return n; }
+  return 1;
 }
 
-/* ============ RENDERING ============ */
-function cardById(id){ return CARDS.find(c=>c.id===id); }
+let selectedBlock = null;
+let currentTab = 'browse';
+let currentFilter = 'all';
 
-function renderCardRow(card, opts={}){
+/* ============ RENDERING ============ */
+function renderCardRow(card){
   const done = loadDone();
   const isDone = !!done[card.id];
   const topic = T[card.t];
@@ -1374,12 +349,13 @@ function renderCardRow(card, opts={}){
   div.innerHTML = `
     <div class="card-head" data-toggle="${card.id}">
       <input type="checkbox" data-check="${card.id}" ${isDone?'checked':''}>
-      <span class="badge topic" style="background:${topic.color}">${topic.name}</span>
-      <span class="badge ${card.p}">${card.p==='high'?'HIGH':'MED'}</span>
-      <span class="card-title${isDone?' strike':''}">${card.title}</span>
-      <span class="meta">~${card.min} min <span class="chev">▾</span></span>
+      <div style="flex:1;">
+        <div class="card-topic-line"><span class="badge topic" style="background:${topic.color}">${topic.name}</span></div>
+        <div class="card-q${isDone?' strike':''}">${card.q}</div>
+      </div>
+      <span class="chev">▾</span>
     </div>
-    <div class="card-body" id="body-${card.id}">${card.html}</div>
+    <div class="card-body" id="body-${card.id}">${card.a}</div>
   `;
   div.querySelector('[data-toggle]').addEventListener('click',(e)=>{
     if(e.target.tagName==='INPUT') return;
@@ -1409,50 +385,67 @@ function weeklyMinutesFromDone(){
   return mins;
 }
 
-let currentFilter = 'all';
-let currentTab = 'session';
-
 function render(){
-  renderSessionPanel();
+  renderBlockGrid();
+  renderBlockContent();
   renderTab();
   renderStats();
 }
 
-function renderSessionPanel(){
-  const session = loadSession();
-  const meta = document.getElementById('sessionMeta');
-  const list = document.getElementById('sessionList');
-  const actions = document.getElementById('sessionActions');
-  list.innerHTML = '';
-  actions.innerHTML = '';
-  if(!session || !session.cardIds || session.cardIds.length===0){
-    meta.textContent = 'No session yet — pick a duration above to build your reading queue.';
-    return;
-  }
+function renderBlockGrid(){
   const done = loadDone();
-  const completedCount = session.cardIds.filter(id=>done[id]).length;
-  const genDate = new Date(session.generatedAt);
-  meta.textContent = `${session.hours} hr session · ${session.cardIds.length} cards · generated ${genDate.toLocaleDateString()} ${genDate.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · ${completedCount}/${session.cardIds.length} done`;
-  session.cardIds.forEach(id=>{
-    const card = cardById(id);
-    if(card) list.appendChild(renderCardRow(card));
-  });
-  const markAllBtn = document.createElement('button');
-  markAllBtn.className = 'btn primary small';
-  markAllBtn.textContent = '✓ Mark all in this session complete';
-  markAllBtn.onclick = ()=>{
-    const d = loadDone();
-    session.cardIds.forEach(id=>{ if(!d[id]) d[id] = new Date().toISOString(); });
-    saveDone(d);
-    render();
-  };
-  actions.appendChild(markAllBtn);
+  const grid = document.getElementById('blockGrid');
+  grid.innerHTML = '';
+  for(let n=1;n<=NUM_BLOCKS;n++){
+    const cnt = blockDoneCount(n, done);
+    const full = cnt===6;
+    const chip = document.createElement('div');
+    chip.className = 'block-chip' + (n===selectedBlock?' active':'') + (full?' full':'');
+    chip.innerHTML = `<div class="num">${n}</div><div class="cnt">${cnt}/6</div>`;
+    chip.addEventListener('click', ()=>{
+      selectedBlock = n;
+      localStorage.setItem(LS.selBlock, String(n));
+      renderBlockGrid();
+      renderBlockContent();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+    grid.appendChild(chip);
+  }
+}
 
-  const clearBtn = document.createElement('button');
-  clearBtn.className = 'btn ghost small';
-  clearBtn.textContent = 'Clear session';
-  clearBtn.onclick = ()=>{ localStorage.removeItem(LS.session); render(); };
-  actions.appendChild(clearBtn);
+function renderBlockContent(){
+  const done = loadDone();
+  const header = document.getElementById('blockHeader');
+  const list = document.getElementById('blockList');
+  const cta = document.getElementById('nextBlockCta');
+  const cards = cardsForBlock(selectedBlock);
+  const cnt = cards.filter(c=>done[c.id]).length;
+
+  header.innerHTML = `<h2>Block ${selectedBlock} <span class="pill">· 2 hrs · ${cnt}/6 done</span></h2>
+    <div class="rationale">${BLOCK_META[selectedBlock]}</div>`;
+
+  list.innerHTML = '';
+  cards.forEach(c=> list.appendChild(renderCardRow(c)));
+
+  cta.innerHTML = '';
+  if(cnt===6 && selectedBlock < NUM_BLOCKS){
+    const box = document.createElement('div');
+    box.className = 'next-block-cta';
+    box.innerHTML = `<span>🎉 Block ${selectedBlock} complete.</span>`;
+    const btn = document.createElement('button');
+    btn.className = 'btn primary small';
+    btn.textContent = `Continue to Block ${selectedBlock+1} →`;
+    btn.onclick = ()=>{
+      selectedBlock = selectedBlock+1;
+      localStorage.setItem(LS.selBlock, String(selectedBlock));
+      render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    };
+    box.appendChild(btn);
+    cta.appendChild(box);
+  } else if(cnt===6 && selectedBlock===NUM_BLOCKS){
+    cta.innerHTML = `<div class="next-block-cta"><span>🏁 All 10 blocks complete — full sprint done.</span></div>`;
+  }
 }
 
 function renderTab(){
@@ -1460,18 +453,13 @@ function renderTab(){
   document.getElementById('tab-'+currentTab).classList.remove('hidden');
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===currentTab));
 
-  if(currentTab==='session'){
-    const el = document.getElementById('tab-session');
-    el.innerHTML = '<p class="muted">Your generated session is shown in the panel above. Use "Browse All" to explore every topic, or "Progress & Weekly Goal" to track your week.</p>';
-  }
   if(currentTab==='browse'){
     const container = document.getElementById('browseContent');
     container.innerHTML = '';
     const done = loadDone();
     TOPICS.forEach(topic=>{
-      let cards = CARDS.filter(c=>c.t===topic.id);
+      let cards = CARDS.filter(c=>c.t===topic.id).sort((a,b)=>a.block-b.block);
       if(currentFilter==='incomplete') cards = cards.filter(c=>!done[c.id]);
-      if(currentFilter==='high') cards = cards.filter(c=>c.p==='high');
       if(cards.length===0) return;
       const head = document.createElement('div');
       head.className = 'topic-group-head';
@@ -1490,10 +478,10 @@ function renderTab(){
 function renderStats(){
   const done = loadDone();
   const total = CARDS.length;
-  const completed = Object.keys(done).filter(id=>cardById(id)).length;
+  const completed = Object.keys(done).filter(id=>CARDS.find(c=>c.id===id)).length;
   const pct = total? Math.round(completed/total*100) : 0;
   document.getElementById('overallBar').style.width = pct+'%';
-  document.getElementById('overallText').textContent = `${completed} / ${total} cards complete (${pct}%) — ${Math.round(completed*20/60*10)/10} hrs studied total`;
+  document.getElementById('overallText').textContent = `${completed} / ${total} questions complete (${pct}%) — ${Math.round(completed*20/60*10)/10} hrs studied total`;
 
   const weekly = loadWeekly();
   document.getElementById('weeklyTarget').value = weekly.target;
@@ -1519,54 +507,37 @@ function renderStats(){
 }
 
 /* ============ EVENTS ============ */
-document.querySelectorAll('[data-hrs]').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const hrs = parseFloat(btn.dataset.hrs);
-    saveSession(generateSession(hrs));
-    currentTab='session';
-    render();
-    window.scrollTo({top:0, behavior:'smooth'});
-  });
-});
-document.getElementById('customGo').addEventListener('click', ()=>{
-  const hrs = parseFloat(document.getElementById('customHrs').value) || 2;
-  saveSession(generateSession(hrs));
-  currentTab='session';
-  render();
-});
-document.getElementById('regenBtn').addEventListener('click', ()=>{
-  const session = loadSession();
-  const hrs = session ? session.hours : 2;
-  saveSession(generateSession(hrs));
-  render();
-});
 document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click', ()=>{ currentTab = tab.dataset.tab; render(); });
+  tab.addEventListener('click', ()=>{ currentTab = tab.dataset.tab; renderTab(); });
 });
 document.querySelectorAll('[data-filter]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
-    render();
+    renderTab();
   });
 });
 document.getElementById('saveTarget').addEventListener('click', ()=>{
   const w = loadWeekly();
   w.target = parseFloat(document.getElementById('weeklyTarget').value) || 10;
   saveWeekly(w);
-  render();
+  renderStats();
 });
 document.getElementById('resetBtn').addEventListener('click', ()=>{
-  if(confirm('Reset ALL progress? This clears completed cards, session, and rotation history.')){
+  if(confirm('Reset ALL progress? This clears every completed question.')){
     localStorage.removeItem(LS.done);
-    localStorage.removeItem(LS.session);
-    localStorage.removeItem(LS.rotation);
+    localStorage.removeItem(LS.selBlock);
     localStorage.removeItem(LS.weekly);
+    selectedBlock = pickDefaultBlock();
     render();
   }
 });
 
+/* init: restore last-viewed block if saved, else the first incomplete block.
+   This ONLY decides which block is displayed — it never alters saved data. */
+const savedBlock = parseInt(localStorage.getItem(LS.selBlock), 10);
+selectedBlock = (savedBlock>=1 && savedBlock<=NUM_BLOCKS) ? savedBlock : pickDefaultBlock();
 render();
 </script>
 </body>
