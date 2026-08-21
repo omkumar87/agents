@@ -1,0 +1,45 @@
+name: Deploy interview & growth tools to Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "landing/**"
+      - "interview-prep/**"
+      - "growth/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/interview-prep _site/growth
+          cp landing/index.html _site/index.html
+          cp interview-prep/index.html _site/interview-prep/index.html
+          cp growth/index.html _site/growth/index.html
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
