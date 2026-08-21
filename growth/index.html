@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engineering Growth Tracker — beyond interview prep</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff; --done:#3ddc84;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  header{padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,17,21,.95);backdrop-filter:blur(6px);z-index:20;}
+  header h1{margin:0 0 4px;font-size:1.4rem;}
+  header p{margin:0;color:var(--muted);font-size:.9rem;}
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 80px;}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;}
+  .panel h2{margin:0 0 4px;font-size:1.1rem;}
+  .panel .sub{color:var(--muted);font-size:.85rem;margin:0 0 16px;line-height:1.5;}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .btn{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:9px;cursor:pointer;font-size:.87rem;font-weight:600;transition:.15s;}
+  .btn:hover{border-color:var(--accent);color:var(--accent);}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn.primary:hover{filter:brightness(1.1);color:#fff;}
+  .btn.small{padding:5px 10px;font-size:.78rem;}
+  .pill{font-size:.72rem;color:var(--muted);}
+  .badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:.7rem;font-weight:700;background:rgba(91,140,255,.15);color:var(--accent);}
+  .prompt-box{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;font-size:.95rem;line-height:1.5;}
+  textarea{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:12px;font-family:inherit;font-size:.88rem;line-height:1.5;resize:vertical;min-height:100px;}
+  textarea:focus{outline:none;border-color:var(--accent);}
+  .example{border:1px dashed var(--border);border-radius:10px;padding:14px 16px;margin-top:12px;font-size:.85rem;line-height:1.55;color:#cbd0da;display:none;}
+  .example.open{display:block;}
+  .example h4{margin:10px 0 3px;color:var(--text);font-size:.82rem;}
+  .example h4:first-child{margin-top:0;}
+  .example p{margin:0 0 4px;}
+  .log-entry{border-top:1px solid var(--border);padding:10px 0;font-size:.85rem;}
+  .log-entry .date{color:var(--muted);font-size:.72rem;margin-bottom:4px;}
+  .log-entry .text{white-space:pre-wrap;line-height:1.5;}
+  .checklist-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+  .checklist-item:last-child{border-bottom:none;}
+  .checklist-item input{width:18px;height:18px;accent-color:var(--done);margin-top:2px;cursor:pointer;flex-shrink:0;}
+  .checklist-item label{flex:1;font-size:.88rem;line-height:1.4;cursor:pointer;}
+  .checklist-item label.done{text-decoration:line-through;color:var(--muted);}
+  .checklist-item .tag{font-size:.68rem;color:var(--muted);}
+  .streak{font-size:1.6rem;font-weight:800;color:var(--done);}
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:20px;}
+  .group-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:16px 0 6px;}
+  .group-label:first-child{margin-top:0;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📈 Engineering Growth Tracker</h1>
+  <p>The stuff flashcards don't build: judgment, writing, and reading real code — daily.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="panel">
+    <div class="row" style="justify-content:space-between;align-items:flex-start;">
+      <div>
+        <h2>Daily Journal <span class="badge">every day</span></h2>
+        <p class="sub">One prompt a day, rotating. Two minutes, honest answer. This is the highest-frequency habit on this page — everything else is weekly or biweekly.</p>
+      </div>
+      <div style="text-align:right;">
+        <div class="streak" id="streakNum">0</div>
+        <div class="pill">day streak</div>
+      </div>
+    </div>
+    <div class="prompt-box" id="dailyPrompt"></div>
+    <textarea id="dailyText" placeholder="Write a few honest sentences..."></textarea>
+    <div class="row" style="margin-top:10px;justify-content:space-between;">
+      <span class="pill" id="dailyStatus"></span>
+      <button class="btn primary small" id="saveDailyBtn">Save today's entry</button>
+    </div>
+    <div id="dailyLog"></div>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="justify-content:space-between;">
+      <h2>Weekly Design Doc <span class="badge">1×/week</span></h2>
+      <button class="btn small" id="toggleDesignExample">Show worked example</button>
+    </div>
+    <p class="sub">Pick something you're actually building — even a personal project. The point isn't the doc, it's being forced to state options you didn't pick and why.</p>
+    <div class="example" id="designExample">
+      <h4>Title</h4><p>Example: Offline Draft Persistence for the Compose Post Editor</p>
+      <h4>Problem / context</h4><p>Users lose an in-progress post draft when the app is killed by the OS or they lose network before hitting "Post." This is a top-5 support complaint on the compose screen.</p>
+      <h4>Constraints</h4><p>No noticeable typing latency, must work fully offline, minimal storage footprint, ships this sprint.</p>
+      <h4>Options considered</h4>
+      <p><b>A.</b> Persist draft to Room on every keystroke, debounced 500ms.<br>
+      <b>B.</b> Persist only on lifecycle events (onStop) via SavedStateHandle.<br>
+      <b>C.</b> In-memory only — bet that process death is rare enough to ignore.</p>
+      <h4>Tradeoffs</h4><p>A survives process death and app-switching, at the cost of extra write I/O (mitigated by the debounce). B is simpler, but SavedStateHandle isn't durable across a real force-quit or the OS killing a long-backgrounded app — the actual failure mode in the complaint. C is simplest but doesn't solve the reported problem at all.</p>
+      <h4>Decision</h4><p>A — Room-backed, 500ms debounced autosave keyed by draft ID; clear the row on successful post.</p>
+      <h4>Risks</h4><p>A hard crash can still lose the last &lt;500ms of typing — acceptable, since it matches "losing everything," not "losing a few characters," which is what users actually reported. Needs a new-table migration.</p>
+    </div>
+    <textarea id="designText" placeholder="Problem / context — Constraints — Options considered — Tradeoffs — Decision — Risks..." style="margin-top:12px;"></textarea>
+    <div class="row" style="margin-top:10px;justify-content:flex-end;">
+      <button class="btn primary small" id="saveDesignBtn">Save this week's doc</button>
+    </div>
+    <div id="designLog"></div>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="justify-content:space-between;">
+      <h2>Postmortem <span class="badge">biweekly</span></h2>
+      <button class="btn small" id="togglePmExample">Show worked example</button>
+    </div>
+    <p class="sub">On any decision from the last two weeks that didn't go as planned — a bug, a wrong tech choice, a mis-scoped task. Blameless, aimed at your own reasoning, not "who messed up."</p>
+    <div class="example" id="pmExample">
+      <h4>Title</h4><p>Example: Profile Screen Crash Loop After a StateFlow Migration</p>
+      <h4>What happened</h4><p>Migrated ProfileViewModel's LiveData to StateFlow + repeatOnLifecycle. Shipped Tuesday 2pm. Crash rate on the profile screen spiked from 0.1% to 4% within 30 minutes; rolled back at 2:40pm via feature flag.</p>
+      <h4>Expected vs. actual</h4><p>Expected a transparent swap with identical behavior. Actual: a deep-link path that navigates straight to Profile (skipping normal navigation) read <code>viewModel.state.value</code> before init finished, hitting a null case the old LiveData had tolerated silently.</p>
+      <h4>Root cause (5 whys)</h4><p>Crash → state accessed before init → deep-link path skips the normal init order → deep-link handling wasn't covered by the manual test pass → the test checklist didn't include deep-link entry points for screens under migration.</p>
+      <h4>What I'd do differently</h4><p>Add deep-link entry points to the manual regression checklist for any ViewModel migration; guard state access with a safe default instead of assuming an init order.</p>
+      <h4>Action going forward</h4><p>Added a "migration checklist" template that explicitly includes deep-link and process-death entry points, not just the normal navigation path.</p>
+    </div>
+    <textarea id="pmText" placeholder="What happened — Expected vs actual — Root cause (5 whys) — What I'd do differently — Action going forward..." style="margin-top:12px;"></textarea>
+    <div class="row" style="margin-top:10px;justify-content:flex-end;">
+      <button class="btn primary small" id="savePmBtn">Save this postmortem</button>
+    </div>
+    <div id="pmLog"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Reading list <span class="badge">self-paced</span></h2>
+    <p class="sub">Books and source code you'll find and track yourself — just checking off progress here.</p>
+
+    <div class="group-label">Books — read once, deeply</div>
+    <div id="booksList"></div>
+
+    <div class="group-label">Source code — pick one, read it end-to-end (depth beats breadth)</div>
+    <div id="sourceList"></div>
+
+    <div class="group-label">Postmortems worth reading (other people's judgment, for free)</div>
+    <div id="pmSourceList"></div>
+  </div>
+
+</div>
+
+<footer>Everything here is cached locally in your browser (localStorage) — nothing leaves this page.</footer>
+
+<script>
+const LS = {
+  daily: 'egt_daily_v1', design: 'egt_design_v1', pm: 'egt_pm_v1', reading: 'egt_reading_v1',
+};
+
+const DAILY_PROMPTS = [
+  "What's one non-trivial technical decision you made today? Why that option over the alternatives?",
+  "What's the trickiest bug you touched today — what was actually going on, once you found the root cause?",
+  "What's one piece of code you read today that you didn't fully understand at first — what did you learn once you dug in?",
+  "If you'd had unlimited time today, what would you have done differently on the thing you shipped?",
+  "What's one assumption you made today that you're not 100% sure is correct? How would you verify it?",
+  "What's a tradeoff you accepted today without fully thinking it through — worth revisiting?",
+  "Who on your team would've solved today's hardest problem differently, and why might their way be better?",
+];
+
+const READING = {
+  books: [
+    {id:'b1', label:'A Philosophy of Software Design (Ousterhout) — what "good design" actually means in practice'},
+    {id:'b2', label:'Designing Data-Intensive Applications (Kleppmann) — the real depth behind everything in the System Design blocks'},
+    {id:'b3', label:'Effective Java (Bloch) — API design, immutability, and footguns; reasoning transfers straight to Kotlin/Android'},
+  ],
+  source: [
+    {id:'s1', label:'OkHttp — trace one real request from call to response'},
+    {id:'s2', label:"Kotlin coroutines core — CoroutineScope/Job/Dispatchers, how structured concurrency is actually implemented"},
+    {id:'s3', label:'Room — what the annotation processor actually generates for a @Dao'},
+  ],
+  pmsources: [
+    {id:'p1', label:'Google SRE Book — incident/postmortem chapters (free online)'},
+    {id:'p2', label:"Cloudflare, GitHub, Stripe engineering blogs — public postmortems"},
+  ],
+};
+
+function loadJSON(key, fallback){ try{ const v = JSON.parse(localStorage.getItem(key)); return v ?? fallback; }catch(e){ return fallback; } }
+function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+function todayKey(d=new Date()){ return d.toISOString().slice(0,10); }
+function dayOfYear(d=new Date()){ const start = new Date(d.getFullYear(),0,0); return Math.floor((d-start)/864e5); }
+
+function fmtDate(key){ const d = new Date(key+'T00:00:00'); return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); }
+
+/* ---------- Daily journal ---------- */
+function renderDaily(){
+  const store = loadJSON(LS.daily, {});
+  const tKey = todayKey();
+  const prompt = DAILY_PROMPTS[dayOfYear() % DAILY_PROMPTS.length];
+  document.getElementById('dailyPrompt').textContent = prompt;
+  document.getElementById('dailyText').value = store[tKey]?.text || '';
+  document.getElementById('dailyStatus').textContent = store[tKey] ? 'Saved for today ✓' : 'Not saved yet today';
+
+  // streak: consecutive days ending today (or yesterday if today not yet written)
+  let streak = 0;
+  let cursor = new Date();
+  if(!store[tKey]) cursor.setDate(cursor.getDate()-1);
+  while(store[todayKey(cursor)]){ streak++; cursor.setDate(cursor.getDate()-1); }
+  document.getElementById('streakNum').textContent = streak;
+
+  const log = document.getElementById('dailyLog');
+  log.innerHTML = '';
+  Object.keys(store).sort().reverse().slice(0,10).forEach(k=>{
+    const e = document.createElement('div');
+    e.className = 'log-entry';
+    e.innerHTML = `<div class="date">${fmtDate(k)}</div><div class="text">${store[k].text.replace(/</g,'&lt;')}</div>`;
+    log.appendChild(e);
+  });
+}
+document.getElementById('saveDailyBtn').addEventListener('click', ()=>{
+  const text = document.getElementById('dailyText').value.trim();
+  if(!text) return;
+  const store = loadJSON(LS.daily, {});
+  const prompt = DAILY_PROMPTS[dayOfYear() % DAILY_PROMPTS.length];
+  store[todayKey()] = {text, prompt};
+  saveJSON(LS.daily, store);
+  renderDaily();
+});
+
+/* ---------- Weekly design doc ---------- */
+function renderDesign(){
+  const list = loadJSON(LS.design, []);
+  const log = document.getElementById('designLog');
+  log.innerHTML = '';
+  list.slice().reverse().slice(0,8).forEach(e=>{
+    const div = document.createElement('div');
+    div.className = 'log-entry';
+    div.innerHTML = `<div class="date">${fmtDate(e.date)}</div><div class="text">${e.text.replace(/</g,'&lt;')}</div>`;
+    log.appendChild(div);
+  });
+}
+document.getElementById('saveDesignBtn').addEventListener('click', ()=>{
+  const text = document.getElementById('designText').value.trim();
+  if(!text) return;
+  const list = loadJSON(LS.design, []);
+  list.push({date: todayKey(), text});
+  saveJSON(LS.design, list);
+  document.getElementById('designText').value = '';
+  renderDesign();
+});
+document.getElementById('toggleDesignExample').addEventListener('click', ()=>{
+  document.getElementById('designExample').classList.toggle('open');
+});
+
+/* ---------- Biweekly postmortem ---------- */
+function renderPm(){
+  const list = loadJSON(LS.pm, []);
+  const log = document.getElementById('pmLog');
+  log.innerHTML = '';
+  list.slice().reverse().slice(0,8).forEach(e=>{
+    const div = document.createElement('div');
+    div.className = 'log-entry';
+    div.innerHTML = `<div class="date">${fmtDate(e.date)}</div><div class="text">${e.text.replace(/</g,'&lt;')}</div>`;
+    log.appendChild(div);
+  });
+}
+document.getElementById('savePmBtn').addEventListener('click', ()=>{
+  const text = document.getElementById('pmText').value.trim();
+  if(!text) return;
+  const list = loadJSON(LS.pm, []);
+  list.push({date: todayKey(), text});
+  saveJSON(LS.pm, list);
+  document.getElementById('pmText').value = '';
+  renderPm();
+});
+document.getElementById('togglePmExample').addEventListener('click', ()=>{
+  document.getElementById('pmExample').classList.toggle('open');
+});
+
+/* ---------- Reading checklist ---------- */
+function renderReadingGroup(containerId, items){
+  const done = loadJSON(LS.reading, {});
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  items.forEach(item=>{
+    const row = document.createElement('div');
+    row.className = 'checklist-item';
+    const isDone = !!done[item.id];
+    row.innerHTML = `<input type="checkbox" id="${item.id}" ${isDone?'checked':''}>
+      <label for="${item.id}" class="${isDone?'done':''}">${item.label}</label>`;
+    row.querySelector('input').addEventListener('change', (e)=>{
+      const d = loadJSON(LS.reading, {});
+      if(e.target.checked) d[item.id] = true; else delete d[item.id];
+      saveJSON(LS.reading, d);
+      renderReadingGroup(containerId, items);
+    });
+    container.appendChild(row);
+  });
+}
+
+function renderAll(){
+  renderDaily();
+  renderDesign();
+  renderPm();
+  renderReadingGroup('booksList', READING.books);
+  renderReadingGroup('sourceList', READING.source);
+  renderReadingGroup('pmSourceList', READING.pmsources);
+}
+renderAll();
+</script>
+</body>
+</html>
