@@ -316,10 +316,41 @@ const RAW = [
  '<code>try/catch</code> around a suspend call works exactly like normal code for expected, recoverable failures. <code>CoroutineExceptionHandler</code> is a last-resort, top-level catch-all installed on a root <code>launch</code> (not <code>async</code> — its exception is delivered via <code>await()</code> instead). <code>supervisorScope</code> changes the propagation rule itself: a child\'s failure doesn\'t cancel its siblings — use it when independent children (e.g. parallel fetches) shouldn\'t all die because one failed.', 12],
 ['android','SavedStateHandle vs rememberSaveable vs a plain ViewModel field — which state survives what?',
  'A plain ViewModel field survives rotation only (ViewModel is destroyed on process death/real finish). <code>rememberSaveable</code> survives rotation AND process death, but only lives as long as that composable is in composition — it\'s UI-layer, not shared with the ViewModel. <code>SavedStateHandle</code> survives both rotation and process death, and lives in the ViewModel — the right place for state the ViewModel itself needs to restore (e.g. a search query, a scroll position driving a network call).', 12],
+
+// --- Blocks 13-14: appended (same reason as 11-12) — closes the DSA gaps
+// flagged as missing: two pointers (opposite-ends), trie, intervals,
+// prefix sums, Kadane's, monotonic stack, recursion/Master Theorem,
+// cycle-detection specifics, multi-source BFS, grid patterns, greedy,
+// quickselect. Treat as Tier-1, not "extra."
+['dsa','What\'s the two-pointer (opposite-ends) pattern, and what problems scream for it?',
+ 'Start one pointer at each end of a sorted array, move inward based on a comparison against a target. Classic uses: pair/triplet with a target sum in a sorted array, container with most water, trapping rain water, valid palindrome — O(n) instead of the naive O(n²) pair check.', 13],
+['dsa','What is a Trie, and when do you reach for one over a HashMap?',
+ 'A prefix tree — each node maps char→child plus an isEndOfWord flag. Insert/search is O(L) (word length), independent of dictionary size, and it naturally supports prefix queries a HashMap can\'t answer efficiently. Use for autocomplete, prefix search, word search II (DFS on a board pruned by a trie), longest common prefix.', 13],
+['dsa','What\'s the standard approach for merge-intervals / meeting-rooms style problems?',
+ 'Sort by start time, then sweep: merge into the last interval if it overlaps (cur.start ≤ prev.end), otherwise start a new one. For "minimum meeting rooms," sort start and end times separately (or use a min-heap of end times) — a classic sweep-line/greedy pattern.', 13],
+['dsa','What does a prefix-sum array buy you, and what\'s the go-to trick for "subarray sum equals K" problems?',
+ 'prefix[i] = sum of arr[0..i). Any range sum arr[l..r] becomes prefix[r+1]-prefix[l] in O(1) after O(n) preprocessing. For "subarray sum equals K": track counts of prefix sums seen so far in a hashmap — for each new prefix, check whether (prefix - K) was seen before.', 13],
+['algo','What\'s the core idea behind Kadane\'s algorithm for maximum subarray sum?',
+ 'At each index, decide whether to extend the previous subarray or start fresh: <code>cur = max(arr[i], cur + arr[i])</code>, then <code>best = max(best, cur)</code>. One pass, O(n), O(1) space — it\'s really a DP recurrence where <code>cur</code> is <code>dp[i]</code>, just not usually named that way.', 13],
+['dsa','What is a monotonic stack, and what class of problems does it solve in O(n)?',
+ 'A stack kept strictly increasing or decreasing by popping elements that violate the order before pushing the new one. Solves "next greater/smaller element," "daily temperatures," "largest rectangle in histogram" — anywhere you need, for each element, its nearest larger/smaller neighbor — in O(n) total since each element is pushed and popped at most once.', 13],
+
+['algo','State the Master Theorem in a form you can actually use live.',
+ 'For T(n) = aT(n/b) + O(n^d), compare d to log_b(a): if d &lt; log_b(a), T(n)=O(n^(log_b a)); if d = log_b(a), T(n)=O(n^d · log n); if d &gt; log_b(a), T(n)=O(n^d). Mergesort (a=2, b=2, d=1) lands in the middle case → O(n log n).', 14],
+['algo','How does cycle detection differ for undirected vs. directed graphs?',
+ 'Undirected: DFS/BFS tracking each node\'s parent — reaching an already-visited node that ISN\'T the parent means a cycle (or use Union-Find: an edge between two nodes already in the same set is a cycle). Directed: track a "currently in the recursion stack" set (white/gray/black coloring) — a back-edge to a gray node means a cycle; a visited-but-black node is fine, already fully explored with no cycle through it.', 14],
+['dsa','What is multi-source BFS, and when do you reach for it?',
+ 'Seed the BFS queue with ALL starting nodes at distance 0 simultaneously, then expand level by level as usual. Used for "rotting oranges" (time until all oranges rot), "nearest exit," any "minimum time for a signal to reach everywhere from multiple origins" — much simpler than running single-source BFS from each source separately.', 14],
+['dsa','What are the two main families of grid-traversal problems, and how do you approach each?',
+ 'Search a sorted matrix: if it\'s fully row+col sorted, start from the top-right (or bottom-left) corner and eliminate a row or column each step — O(m+n). Flood-fill/connected-region problems (number of islands, largest region): DFS/BFS from each unvisited "land" cell, marking cells visited in place or via a separate visited set.', 14],
+['dsa','How do you recognize a greedy problem, and how do you justify it in an interview?',
+ 'Greedy works when a locally optimal choice at each step provably leads to a globally optimal solution — the standard justification is an exchange argument (show swapping any other choice for the greedy one never makes things worse). Classic tells: interval scheduling (sort by end time, pick the earliest-ending non-conflicting option), activity selection, coin change with a canonical coin system. If you can\'t argue why the greedy choice is safe, it\'s probably actually a DP problem.', 14],
+['algo','How do you find the Kth largest element in O(n) average time without fully sorting?',
+ 'Quickselect — the same partitioning idea as quicksort, but after partitioning around a pivot you only recurse into the side containing the Kth position, discarding the other half entirely. O(n) average (T(n)=T(n/2)+O(n)), O(n²) worst case (mitigated with a random pivot). The heap approach (O(n log k), already covered) is the safer default to lead with — quickselect is the strong follow-up to "can you do better?"', 14],
 ];
 
 const CARDS = RAW.map((r,i)=>({id:`c${i}`, t:r[0], q:r[1], a:r[2], block:r[3]}));
-const NUM_BLOCKS = 12;
+const NUM_BLOCKS = 14;
 const BLOCK_META = {
   1:"Tier 1 — the single highest-yield question per domain. If you only have one 2-hour slot before an interview, do this block.",
   2:"Tier 1, continued — still core fundamentals; rounds out the basics across System Design and Go alongside Android/Kotlin/Java/DSA.",
@@ -333,6 +364,8 @@ const BLOCK_META = {
   10:"Polish, continued — edge cases and nuance that come up in the last 20 minutes of a strong interview.",
   11:"Added on request — Android architecture (MVVM/MVI) &amp; state ownership. Numbered last only because it was appended after the fact; treat it as Tier-1, not optional.",
   12:"Added on request, continued — Flows (cold/hot), coroutine exception handling, and Kotlin's object/enum/value-class toolkit. Same priority note as Block 11.",
+  13:"Added on request — DSA pattern gaps: two pointers, trie, intervals, prefix sums, Kadane's, monotonic stack. Same priority note as Block 11.",
+  14:"Added on request, continued — recursion/Master Theorem, graph cycle-detection specifics, multi-source BFS, grid patterns, greedy, quickselect. Same priority note as Block 11.",
 };
 
 /* ============ STORAGE ============ */
