@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotlin Field Guide</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff; --done:#3ddc84;
+    --code-bg:#0b0d12; --code-text:#c9d6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  header{padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,17,21,.95);backdrop-filter:blur(6px);z-index:20;}
+  header h1{margin:0 0 4px;font-size:1.35rem;}
+  header p{margin:0;color:var(--muted);font-size:.88rem;}
+  header a.back{color:var(--muted);font-size:.78rem;text-decoration:none;}
+  header a.back:hover{color:var(--accent);}
+  .wrap{max-width:820px;margin:0 auto;padding:22px 18px 90px;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .block-tabs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .block-tab{
+    font-size:.78rem;font-weight:700;padding:7px 14px;border-radius:9px;border:1px solid var(--border);
+    background:var(--panel2);color:var(--muted);
+  }
+  .block-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .block-tab.soon{opacity:.5;}
+  .pill{font-size:.72rem;color:var(--muted);}
+  .progress-outer{background:var(--code-bg);border-radius:99px;height:7px;overflow:hidden;border:1px solid var(--border);width:140px;}
+  .progress-inner{height:100%;background:var(--done);}
+  .stat{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.76rem;color:var(--muted);}
+
+  .birdseye{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:20px 22px;margin:22px 0 30px;font-size:.95rem;line-height:1.7;color:#dbe0ea;
+  }
+  .birdseye b{color:var(--accent);}
+  .birdseye .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;display:block;}
+
+  .component{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;margin-bottom:14px;
+  }
+  .component.done{opacity:.55;}
+  .component-head{display:flex;align-items:flex-start;gap:12px;}
+  .component input[type=checkbox]{width:19px;height:19px;margin-top:2px;accent-color:var(--done);cursor:pointer;flex-shrink:0;}
+  .component h2{margin:0 0 6px;font-size:1.05rem;}
+  .component .desc{margin:0 0 12px;font-size:.87rem;line-height:1.6;color:var(--muted);}
+  .component .desc b{color:var(--text);font-weight:600;}
+  .component .desc code{font-family:ui-monospace,"SF Mono",Menlo,monospace;background:var(--code-bg);color:var(--accent);padding:1px 5px;border-radius:4px;font-size:.85em;}
+  pre{
+    background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;overflow-x:auto;margin:0;
+  }
+  pre code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.82rem;line-height:1.55;color:var(--code-text);white-space:pre;}
+  .kw{color:#c586c0;} .type{color:#4ec9b0;} .str{color:#ce9178;} .cmt{color:#6a9955;} .fn{color:#dcdcaa;}
+
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:24px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap" style="padding:0;">
+    <a class="back" href="./index.html">&larr; All guides</a>
+    <div class="row" style="justify-content:space-between;margin-top:6px;">
+      <div>
+        <h1>🎯 Kotlin Field Guide</h1>
+        <p>Not questions. Map first, then a brief + code snippet per piece — enough to be aware, not exhaustive.</p>
+      </div>
+      <div style="text-align:right;">
+        <div class="stat" id="statText">0/12 marked understood</div>
+        <div class="progress-outer" style="margin-top:5px;"><div class="progress-inner" id="statBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="block-tabs">
+      <span class="block-tab active">Block 1 · Language Core (breadth)</span>
+      <span class="block-tab soon">Block 2 · Coroutines &amp; Flow (depth) — coming</span>
+      <span class="block-tab soon">Block 3 · Type System deep dive (depth) — coming</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="birdseye">
+    <span class="label">Bird's eye — how it all fits together</span>
+    Kotlin's whole design fits one idea: make the compiler catch what Java leaves to runtime, and make common patterns need less code. <b>Null safety</b> puts "can this be null" into the type itself. <b>Data</b> and <b>sealed classes</b> turn "a value with a fixed shape" into one line. <b>Extension functions</b> add behavior to types you don't own. <b>Coroutines</b> turn async code back into code that reads top-to-bottom instead of nested callbacks, and <b>Flow</b> is the async version of a collection — a stream of values over time instead of all-at-once. Everything below is one facet of that idea.
+  </div>
+
+  <div id="components"></div>
+
+</div>
+
+<footer>Checkboxes are cached in this browser (localStorage) so you can see what you've already passed over.</footer>
+
+<script>
+const COMPONENTS = [
+  {
+    "id": "null-safety",
+    "title": "Null safety",
+    "desc": "The compiler tracks nullability in the type itself — <code>String</code> and <code>String?</code> are different types. <code>!!</code> forces past that check (and can crash); <code>?:</code> gives a fallback; <code>by lazy</code> computes a val once, on first use.",
+    "code": "<span class=\"kw\">var</span> name: <span class=\"type\">String</span>? = <span class=\"kw\">null</span>\n<span class=\"kw\">val</span> len = name?.length ?: <span class=\"fn\">0</span>        <span class=\"cmt\">// safe call + elvis default</span>\n<span class=\"kw\">val</span> forced = name!!.length          <span class=\"cmt\">// throws if null — avoid in real code</span>\n\n<span class=\"kw\">val</span> expensive: <span class=\"type\">String</span> <span class=\"kw\">by</span> lazy { computeSlowly() }  <span class=\"cmt\">// computed once, on first access</span>"
+  },
+  {
+    "id": "data-classes",
+    "title": "Data classes",
+    "desc": "One line gets you <code>equals</code>/<code>hashCode</code> (structural, by properties), <code>toString</code>, <code>copy()</code>, and destructuring — no manual boilerplate.",
+    "code": "<span class=\"kw\">data class</span> <span class=\"type\">User</span>(<span class=\"kw\">val</span> id: <span class=\"type\">String</span>, <span class=\"kw\">val</span> name: <span class=\"type\">String</span>)\n\n<span class=\"kw\">val</span> u2 = user.copy(name = <span class=\"str\">\"New Name\"</span>)   <span class=\"cmt\">// new object, one field changed</span>\n<span class=\"kw\">val</span> (id, name) = user                    <span class=\"cmt\">// destructuring</span>"
+  },
+  {
+    "id": "sealed-classes",
+    "title": "Sealed classes",
+    "desc": "Restricts subclasses to a known, closed set — so a <code>when</code> over them is exhaustive; the compiler won't let you forget a case.",
+    "code": "<span class=\"kw\">sealed class</span> <span class=\"type\">UiState</span>\n<span class=\"kw\">data object</span> <span class=\"type\">Loading</span> : <span class=\"type\">UiState</span>()\n<span class=\"kw\">data class</span> <span class=\"type\">Success</span>(<span class=\"kw\">val</span> data: <span class=\"type\">List</span>&lt;<span class=\"type\">Item</span>&gt;) : <span class=\"type\">UiState</span>()\n<span class=\"kw\">data class</span> <span class=\"type\">Error</span>(<span class=\"kw\">val</span> message: <span class=\"type\">String</span>) : <span class=\"type\">UiState</span>()\n\n<span class=\"kw\">when</span> (state) {\n    <span class=\"kw\">is</span> <span class=\"type\">Loading</span> -> showSpinner()\n    <span class=\"kw\">is</span> <span class=\"type\">Success</span> -> render(state.data)\n    <span class=\"kw\">is</span> <span class=\"type\">Error</span> -> showError(state.message)   <span class=\"cmt\">// compiler forces you to handle this</span>\n}"
+  },
+  {
+    "id": "scope-functions",
+    "title": "Scope functions",
+    "desc": "Five short-lived context blocks, picked by what you need back: <code>let</code>/<code>run</code> return the lambda's result, <code>apply</code>/<code>also</code> return the receiver itself.",
+    "code": "user?.let { println(it.name) }             <span class=\"cmt\">// null-check + use</span>\n<span class=\"kw\">val</span> user = <span class=\"type\">User</span>().apply { name = <span class=\"str\">\"Sam\"</span> }   <span class=\"cmt\">// configure, return the object</span>\n<span class=\"kw\">val</span> result = user.run { computeSomething() }  <span class=\"cmt\">// compute using 'this', return result</span>"
+  },
+  {
+    "id": "extension-functions",
+    "title": "Extension functions",
+    "desc": "Add a method to a type you don't own — no subclassing, no wrapper class.",
+    "code": "<span class=\"kw\">fun</span> <span class=\"type\">String</span>.<span class=\"fn\">isValidEmail</span>(): <span class=\"type\">Boolean</span> = contains(<span class=\"str\">\"@\"</span>) && contains(<span class=\"str\">\".\"</span>)\n\n<span class=\"str\">\"a@b.com\"</span>.isValidEmail()   <span class=\"cmt\">// called like a real member function</span>"
+  },
+  {
+    "id": "higher-order",
+    "title": "Higher-order functions & lambdas",
+    "desc": "Functions are values — pass behavior around like data, instead of only passing data.",
+    "code": "<span class=\"kw\">fun</span> <span class=\"fn\">retry</span>(times: <span class=\"type\">Int</span>, action: () -> <span class=\"type\">Unit</span>) {\n    repeat(times) { action() }\n}\nretry(<span class=\"fn\">3</span>) { println(<span class=\"str\">\"attempt\"</span>) }   <span class=\"cmt\">// trailing lambda syntax</span>"
+  },
+  {
+    "id": "coroutines",
+    "title": "Coroutines",
+    "desc": "<code>suspend</code> marks a function that can pause without blocking the thread. <code>launch</code> fires-and-forgets; <code>async</code> returns a value you <code>await()</code> later.",
+    "code": "<span class=\"kw\">suspend fun</span> <span class=\"fn\">fetchUser</span>(): <span class=\"type\">User</span> { <span class=\"cmt\">/* ... */</span> }\n\nviewModelScope.launch {\n    <span class=\"kw\">val</span> user = fetchUser()   <span class=\"cmt\">// reads top-to-bottom, no callback nesting</span>\n}"
+  },
+  {
+    "id": "flow",
+    "title": "Flow / StateFlow / SharedFlow",
+    "desc": "Flow is a stream of values over time — the async version of a List. StateFlow always holds a current value (good for UI state); SharedFlow doesn't (good for one-off events).",
+    "code": "<span class=\"kw\">val</span> state: <span class=\"type\">StateFlow</span>&lt;<span class=\"type\">UiState</span>&gt; = repository.observe()\n    .map { <span class=\"type\">UiState</span>.Success(it) }\n    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), <span class=\"type\">UiState</span>.Loading)"
+  },
+  {
+    "id": "generics-variance",
+    "title": "Generics (in/out variance)",
+    "desc": "<code>out</code> means a type is only ever produced/read (covariant) — a <code>Box&lt;Cat&gt;</code> can stand in for a <code>Box&lt;Animal&gt;</code>. <code>in</code> means only consumed/written (contravariant).",
+    "code": "<span class=\"kw\">class</span> <span class=\"type\">Box</span>&lt;<span class=\"kw\">out</span> T&gt;(<span class=\"kw\">val</span> item: T)      <span class=\"cmt\">// Box&lt;Cat&gt; is-a Box&lt;Animal&gt;</span>\n<span class=\"kw\">class</span> <span class=\"type\">Sink</span>&lt;<span class=\"kw\">in</span> T&gt; { <span class=\"kw\">fun</span> <span class=\"fn\">put</span>(t: T) {} }  <span class=\"cmt\">// Sink&lt;Animal&gt; is-a Sink&lt;Cat&gt;</span>"
+  },
+  {
+    "id": "delegation",
+    "title": "Delegation",
+    "desc": "<code>by</code> forwards a property or an entire interface to another object — composition without writing the boilerplate forwarding calls yourself.",
+    "code": "<span class=\"kw\">class</span> <span class=\"type\">ViewModel</span>(repo: <span class=\"type\">Fetcher</span>) : <span class=\"type\">Fetcher</span> <span class=\"kw\">by</span> repo   <span class=\"cmt\">// forwards all Fetcher calls to repo</span>\n\n<span class=\"kw\">var</span> value: <span class=\"type\">String</span> <span class=\"kw\">by</span> Delegates.observable(<span class=\"str\">\"init\"</span>) { _, old, new ->\n    println(<span class=\"str\">\"$old -> $new\"</span>)\n}"
+  },
+  {
+    "id": "object-companion",
+    "title": "Object / companion object",
+    "desc": "<code>object</code> is a singleton, created lazily on first access. <code>companion object</code> is the same idea, scoped inside a class — Kotlin's answer to Java's <code>static</code>.",
+    "code": "<span class=\"kw\">object</span> <span class=\"type\">NetworkClient</span> { <span class=\"kw\">fun</span> <span class=\"fn\">call</span>() { } }   <span class=\"cmt\">// one instance, app-wide</span>\n\n<span class=\"kw\">class</span> <span class=\"type\">User</span> <span class=\"kw\">private constructor</span>(<span class=\"kw\">val</span> id: <span class=\"type\">String</span>) {\n    <span class=\"kw\">companion object</span> {\n        <span class=\"kw\">fun</span> <span class=\"fn\">create</span>(id: <span class=\"type\">String</span>) = <span class=\"type\">User</span>(id)   <span class=\"cmt\">// factory function, no \"static\" keyword needed</span>\n    }\n}"
+  },
+  {
+    "id": "inline-reified",
+    "title": "Inline + reified",
+    "desc": "<code>inline</code> copies a function's body to the call site instead of allocating a real function object. <code>reified</code> (only legal on inline functions) keeps the generic type available at runtime.",
+    "code": "<span class=\"kw\">inline fun</span> &lt;<span class=\"kw\">reified</span> T&gt; <span class=\"type\">Gson</span>.<span class=\"fn\">fromJson</span>(json: <span class=\"type\">String</span>): T =\n    <span class=\"kw\">this</span>.fromJson(json, T::class.java)   <span class=\"cmt\">// T is usable at runtime here, unlike normal generics</span>"
+  }
+];
+
+const LS_KEY = 'kotlin_guide_done_v1';
+function loadDone(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e){ return {}; } }
+function saveDone(d){ localStorage.setItem(LS_KEY, JSON.stringify(d)); }
+
+function render(){
+  const done = loadDone();
+  const container = document.getElementById('components');
+  container.innerHTML = '';
+  COMPONENTS.forEach(c => {
+    const isDone = !!done[c.id];
+    const div = document.createElement('div');
+    div.className = 'component' + (isDone ? ' done' : '');
+    div.innerHTML = `
+      <div class="component-head">
+        <input type="checkbox" id="chk-${c.id}" ${isDone ? 'checked' : ''}>
+        <div style="flex:1;">
+          <h2>${c.title}</h2>
+          <p class="desc">${c.desc}</p>
+          <pre><code>${c.code}</code></pre>
+        </div>
+      </div>`;
+    div.querySelector('input').addEventListener('change', (e) => {
+      const d = loadDone();
+      if (e.target.checked) d[c.id] = true; else delete d[c.id];
+      saveDone(d);
+      render();
+    });
+    container.appendChild(div);
+  });
+
+  const doneCount = Object.keys(done).filter(id => COMPONENTS.find(c => c.id === id)).length;
+  document.getElementById('statText').textContent = doneCount + '/' + COMPONENTS.length + ' marked understood';
+  document.getElementById('statBar').style.width = (doneCount / COMPONENTS.length * 100) + '%';
+}
+render();
+</script>
+</body>
+</html>

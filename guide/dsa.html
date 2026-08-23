@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DS & Algo Field Guide</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff; --done:#3ddc84;
+    --code-bg:#0b0d12; --code-text:#c9d6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  header{padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,17,21,.95);backdrop-filter:blur(6px);z-index:20;}
+  header h1{margin:0 0 4px;font-size:1.35rem;}
+  header p{margin:0;color:var(--muted);font-size:.88rem;}
+  header a.back{color:var(--muted);font-size:.78rem;text-decoration:none;}
+  header a.back:hover{color:var(--accent);}
+  .wrap{max-width:820px;margin:0 auto;padding:22px 18px 90px;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .block-tabs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .block-tab{
+    font-size:.78rem;font-weight:700;padding:7px 14px;border-radius:9px;border:1px solid var(--border);
+    background:var(--panel2);color:var(--muted);
+  }
+  .block-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .block-tab.soon{opacity:.5;}
+  .pill{font-size:.72rem;color:var(--muted);}
+  .progress-outer{background:var(--code-bg);border-radius:99px;height:7px;overflow:hidden;border:1px solid var(--border);width:140px;}
+  .progress-inner{height:100%;background:var(--done);}
+  .stat{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.76rem;color:var(--muted);}
+
+  .birdseye{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:20px 22px;margin:22px 0 30px;font-size:.95rem;line-height:1.7;color:#dbe0ea;
+  }
+  .birdseye b{color:var(--accent);}
+  .birdseye .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;display:block;}
+
+  .component{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;margin-bottom:14px;
+  }
+  .component.done{opacity:.55;}
+  .component-head{display:flex;align-items:flex-start;gap:12px;}
+  .component input[type=checkbox]{width:19px;height:19px;margin-top:2px;accent-color:var(--done);cursor:pointer;flex-shrink:0;}
+  .component h2{margin:0 0 6px;font-size:1.05rem;}
+  .component .desc{margin:0 0 12px;font-size:.87rem;line-height:1.6;color:var(--muted);}
+  .component .desc b{color:var(--text);font-weight:600;}
+  .component .desc code{font-family:ui-monospace,"SF Mono",Menlo,monospace;background:var(--code-bg);color:var(--accent);padding:1px 5px;border-radius:4px;font-size:.85em;}
+  pre{
+    background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;overflow-x:auto;margin:0;
+  }
+  pre code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.82rem;line-height:1.55;color:var(--code-text);white-space:pre;}
+  .kw{color:#c586c0;} .type{color:#4ec9b0;} .str{color:#ce9178;} .cmt{color:#6a9955;} .fn{color:#dcdcaa;}
+
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:24px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap" style="padding:0;">
+    <a class="back" href="./index.html">&larr; All guides</a>
+    <div class="row" style="justify-content:space-between;margin-top:6px;">
+      <div>
+        <h1>🧩 DS & Algo Field Guide</h1>
+        <p>Not questions. Map first, then a brief + code snippet per piece — enough to be aware, not exhaustive.</p>
+      </div>
+      <div style="text-align:right;">
+        <div class="stat" id="statText">0/12 marked understood</div>
+        <div class="progress-outer" style="margin-top:5px;"><div class="progress-inner" id="statBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="block-tabs">
+      <span class="block-tab active">Block 1 · Patterns (breadth)</span>
+      <span class="block-tab soon">Block 2 · Graph algorithms (depth) — coming</span>
+      <span class="block-tab soon">Block 3 · DP families (depth) — coming</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="birdseye">
+    <span class="label">Bird's eye — how it all fits together</span>
+    Almost every interview problem is a disguised version of one of about 12 patterns. Recognizing which one applies is the actual skill — once you know that, the code is usually short and the pattern tells you the complexity for free. This is a map of the patterns themselves, not a list of problems to memorize: read each card as "here's the shape, here's when you reach for it," and the code below is the generic skeleton, not a specific LeetCode solution.
+  </div>
+
+  <div id="components"></div>
+
+</div>
+
+<footer>Checkboxes are cached in this browser (localStorage) so you can see what you've already passed over.</footer>
+
+<script>
+const COMPONENTS = [
+  {
+    "id": "two-pointers",
+    "title": "Two pointers (opposite ends)",
+    "desc": "Start at both ends of a sorted array, move inward based on a comparison against a target. Turns an O(n²) pair-check into O(n).",
+    "code": "<span class=\"kw\">var</span> left = <span class=\"fn\">0</span>; <span class=\"kw\">var</span> right = arr.size - <span class=\"fn\">1</span>\n<span class=\"kw\">while</span> (left &lt; right) {\n    <span class=\"kw\">val</span> sum = arr[left] + arr[right]\n    <span class=\"kw\">when</span> {\n        sum == target -> { <span class=\"cmt\">/* found */</span> break }\n        sum &lt; target -> left++\n        <span class=\"kw\">else</span> -> right--\n    }\n}"
+  },
+  {
+    "id": "sliding-window",
+    "title": "Sliding window",
+    "desc": "Grow a window from the right, shrink from the left when a constraint breaks. Turns a nested-loop scan into a single pass.",
+    "code": "<span class=\"kw\">var</span> left = <span class=\"fn\">0</span>; <span class=\"kw\">var</span> sum = <span class=\"fn\">0</span>\n<span class=\"kw\">for</span> (right <span class=\"kw\">in</span> arr.indices) {\n    sum += arr[right]\n    <span class=\"kw\">while</span> (sum &gt; limit) { sum -= arr[left]; left++ }\n    <span class=\"cmt\">// window [left, right] is valid here</span>\n}"
+  },
+  {
+    "id": "fast-slow",
+    "title": "Fast & slow pointers",
+    "desc": "One pointer moves twice as fast as the other. If a cycle exists, they must eventually meet — O(1) space instead of a visited-set.",
+    "code": "<span class=\"kw\">var</span> slow = head; <span class=\"kw\">var</span> fast = head\n<span class=\"kw\">while</span> (fast != <span class=\"kw\">null</span> && fast.next != <span class=\"kw\">null</span>) {\n    slow = slow!!.next\n    fast = fast.next!!.next\n    <span class=\"kw\">if</span> (slow == fast) { <span class=\"cmt\">/* cycle found */</span> break }\n}"
+  },
+  {
+    "id": "binary-search-answer",
+    "title": "Binary search on the answer",
+    "desc": "When \"can we do it with X?\" is monotonic (false...false, true...true), binary search X itself, not the input array.",
+    "code": "<span class=\"kw\">var</span> lo = <span class=\"fn\">0</span>; <span class=\"kw\">var</span> hi = maxPossible\n<span class=\"kw\">while</span> (lo &lt; hi) {\n    <span class=\"kw\">val</span> mid = lo + (hi - lo) / <span class=\"fn\">2</span>\n    <span class=\"kw\">if</span> (feasible(mid)) hi = mid <span class=\"kw\">else</span> lo = mid + <span class=\"fn\">1</span>\n}\n<span class=\"cmt\">// lo is the smallest value where feasible(lo) is true</span>"
+  },
+  {
+    "id": "bfs-dfs",
+    "title": "BFS / DFS",
+    "desc": "BFS = shortest path / level-by-level, via a queue. DFS = explore fully before backtracking, via recursion or a stack.",
+    "code": "<span class=\"kw\">val</span> queue = ArrayDeque(listOf(start))\n<span class=\"kw\">val</span> visited = mutableSetOf(start)\n<span class=\"kw\">while</span> (queue.isNotEmpty()) {\n    <span class=\"kw\">val</span> node = queue.removeFirst()\n    <span class=\"kw\">for</span> (next <span class=\"kw\">in</span> graph[node] ?: emptyList()) {\n        <span class=\"kw\">if</span> (visited.add(next)) queue.add(next)\n    }\n}"
+  },
+  {
+    "id": "backtracking",
+    "title": "Backtracking",
+    "desc": "Try a choice, recurse, then undo it before trying the next one. Brute force with an escape hatch — pruning early is what keeps it fast.",
+    "code": "<span class=\"kw\">fun</span> <span class=\"fn\">backtrack</span>(path: <span class=\"type\">MutableList</span>&lt;<span class=\"type\">Int</span>&gt;, choices: <span class=\"type\">List</span>&lt;<span class=\"type\">Int</span>&gt;) {\n    <span class=\"kw\">if</span> (isSolution(path)) { record(path.toList()); <span class=\"kw\">return</span> }\n    <span class=\"kw\">for</span> (choice <span class=\"kw\">in</span> choices) {\n        path.add(choice)\n        backtrack(path, remaining(choices, choice))\n        path.removeAt(path.lastIndex)   <span class=\"cmt\">// undo</span>\n    }\n}"
+  },
+  {
+    "id": "dynamic-programming",
+    "title": "Dynamic programming",
+    "desc": "Define the state precisely first — what does <code>dp[i]</code> actually mean? — before writing the recurrence. Overlapping subproblems is the tell.",
+    "code": "<span class=\"kw\">val</span> dp = IntArray(n + <span class=\"fn\">1</span>)\ndp[<span class=\"fn\">0</span>] = <span class=\"fn\">0</span>; dp[<span class=\"fn\">1</span>] = <span class=\"fn\">1</span>\n<span class=\"kw\">for</span> (i <span class=\"kw\">in</span> <span class=\"fn\">2</span>..n) dp[i] = dp[i - <span class=\"fn\">1</span>] + dp[i - <span class=\"fn\">2</span>]   <span class=\"cmt\">// shape of it, not a specific problem</span>"
+  },
+  {
+    "id": "heap-topk",
+    "title": "Heap / Top-K",
+    "desc": "For \"K largest,\" keep a min-heap of size K — pop the smallest whenever it grows past K. O(n log K) beats a full sort when K is small.",
+    "code": "<span class=\"kw\">val</span> minHeap = PriorityQueue&lt;<span class=\"type\">Int</span>&gt;()\n<span class=\"kw\">for</span> (n <span class=\"kw\">in</span> nums) {\n    minHeap.add(n)\n    <span class=\"kw\">if</span> (minHeap.size &gt; k) minHeap.poll()\n}\n<span class=\"cmt\">// minHeap now holds the K largest</span>"
+  },
+  {
+    "id": "union-find",
+    "title": "Union-Find",
+    "desc": "<code>find()</code> with path compression, <code>union()</code> by rank — together, near O(1) per operation. For connectivity/cycle detection without a full graph traversal.",
+    "code": "<span class=\"kw\">fun</span> <span class=\"fn\">find</span>(x: <span class=\"type\">Int</span>): <span class=\"type\">Int</span> {\n    <span class=\"kw\">if</span> (parent[x] != x) parent[x] = find(parent[x])   <span class=\"cmt\">// path compression</span>\n    <span class=\"kw\">return</span> parent[x]\n}\n<span class=\"kw\">fun</span> <span class=\"fn\">union</span>(a: <span class=\"type\">Int</span>, b: <span class=\"type\">Int</span>) {\n    <span class=\"kw\">val</span> ra = find(a); <span class=\"kw\">val</span> rb = find(b)\n    <span class=\"kw\">if</span> (ra != rb) parent[ra] = rb\n}"
+  },
+  {
+    "id": "trie",
+    "title": "Trie",
+    "desc": "A tree of characters — each node maps char to child, plus an end-of-word flag. O(word length) lookups, independent of dictionary size.",
+    "code": "<span class=\"kw\">class</span> <span class=\"type\">TrieNode</span> {\n    <span class=\"kw\">val</span> children = HashMap&lt;<span class=\"type\">Char</span>, <span class=\"type\">TrieNode</span>&gt;()\n    <span class=\"kw\">var</span> isEnd = <span class=\"kw\">false</span>\n}\n<span class=\"kw\">fun</span> <span class=\"fn\">insert</span>(root: <span class=\"type\">TrieNode</span>, word: <span class=\"type\">String</span>) {\n    <span class=\"kw\">var</span> node = root\n    <span class=\"kw\">for</span> (c <span class=\"kw\">in</span> word) node = node.children.getOrPut(c) { <span class=\"type\">TrieNode</span>() }\n    node.isEnd = <span class=\"kw\">true</span>\n}"
+  },
+  {
+    "id": "intervals",
+    "title": "Intervals",
+    "desc": "Sort by start time, then sweep — merge into the previous interval if it overlaps, otherwise start a new one.",
+    "code": "intervals.sortBy { it[<span class=\"fn\">0</span>] }\n<span class=\"kw\">val</span> merged = mutableListOf(intervals[<span class=\"fn\">0</span>])\n<span class=\"kw\">for</span> (curr <span class=\"kw\">in</span> intervals.drop(<span class=\"fn\">1</span>)) {\n    <span class=\"kw\">val</span> last = merged.last()\n    <span class=\"kw\">if</span> (curr[<span class=\"fn\">0</span>] &lt;= last[<span class=\"fn\">1</span>]) last[<span class=\"fn\">1</span>] = maxOf(last[<span class=\"fn\">1</span>], curr[<span class=\"fn\">1</span>])\n    <span class=\"kw\">else</span> merged.add(curr)\n}"
+  },
+  {
+    "id": "monotonic-stack",
+    "title": "Monotonic stack",
+    "desc": "Keep a stack increasing or decreasing by popping violators before pushing. For \"next greater element\" style problems, in O(n) total.",
+    "code": "<span class=\"kw\">val</span> stack = ArrayDeque&lt;<span class=\"type\">Int</span>&gt;()   <span class=\"cmt\">// holds indices</span>\n<span class=\"kw\">val</span> result = IntArray(nums.size) { -<span class=\"fn\">1</span> }\n<span class=\"kw\">for</span> (i <span class=\"kw\">in</span> nums.indices) {\n    <span class=\"kw\">while</span> (stack.isNotEmpty() && nums[stack.last()] &lt; nums[i]) {\n        result[stack.removeLast()] = nums[i]\n    }\n    stack.addLast(i)\n}"
+  }
+];
+
+const LS_KEY = 'dsa_guide_done_v1';
+function loadDone(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e){ return {}; } }
+function saveDone(d){ localStorage.setItem(LS_KEY, JSON.stringify(d)); }
+
+function render(){
+  const done = loadDone();
+  const container = document.getElementById('components');
+  container.innerHTML = '';
+  COMPONENTS.forEach(c => {
+    const isDone = !!done[c.id];
+    const div = document.createElement('div');
+    div.className = 'component' + (isDone ? ' done' : '');
+    div.innerHTML = `
+      <div class="component-head">
+        <input type="checkbox" id="chk-${c.id}" ${isDone ? 'checked' : ''}>
+        <div style="flex:1;">
+          <h2>${c.title}</h2>
+          <p class="desc">${c.desc}</p>
+          <pre><code>${c.code}</code></pre>
+        </div>
+      </div>`;
+    div.querySelector('input').addEventListener('change', (e) => {
+      const d = loadDone();
+      if (e.target.checked) d[c.id] = true; else delete d[c.id];
+      saveDone(d);
+      render();
+    });
+    container.appendChild(div);
+  });
+
+  const doneCount = Object.keys(done).filter(id => COMPONENTS.find(c => c.id === id)).length;
+  document.getElementById('statText').textContent = doneCount + '/' + COMPONENTS.length + ' marked understood';
+  document.getElementById('statBar').style.width = (doneCount / COMPONENTS.length * 100) + '%';
+}
+render();
+</script>
+</body>
+</html>

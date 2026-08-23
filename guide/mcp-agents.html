@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP & Agents Field Guide</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff; --done:#3ddc84;
+    --code-bg:#0b0d12; --code-text:#c9d6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  header{padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,17,21,.95);backdrop-filter:blur(6px);z-index:20;}
+  header h1{margin:0 0 4px;font-size:1.35rem;}
+  header p{margin:0;color:var(--muted);font-size:.88rem;}
+  header a.back{color:var(--muted);font-size:.78rem;text-decoration:none;}
+  header a.back:hover{color:var(--accent);}
+  .wrap{max-width:820px;margin:0 auto;padding:22px 18px 90px;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .block-tabs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .block-tab{
+    font-size:.78rem;font-weight:700;padding:7px 14px;border-radius:9px;border:1px solid var(--border);
+    background:var(--panel2);color:var(--muted);
+  }
+  .block-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .block-tab.soon{opacity:.5;}
+  .pill{font-size:.72rem;color:var(--muted);}
+  .progress-outer{background:var(--code-bg);border-radius:99px;height:7px;overflow:hidden;border:1px solid var(--border);width:140px;}
+  .progress-inner{height:100%;background:var(--done);}
+  .stat{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.76rem;color:var(--muted);}
+
+  .birdseye{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:20px 22px;margin:22px 0 30px;font-size:.95rem;line-height:1.7;color:#dbe0ea;
+  }
+  .birdseye b{color:var(--accent);}
+  .birdseye .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;display:block;}
+
+  .component{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;margin-bottom:14px;
+  }
+  .component.done{opacity:.55;}
+  .component-head{display:flex;align-items:flex-start;gap:12px;}
+  .component input[type=checkbox]{width:19px;height:19px;margin-top:2px;accent-color:var(--done);cursor:pointer;flex-shrink:0;}
+  .component h2{margin:0 0 6px;font-size:1.05rem;}
+  .component .desc{margin:0 0 12px;font-size:.87rem;line-height:1.6;color:var(--muted);}
+  .component .desc b{color:var(--text);font-weight:600;}
+  .component .desc code{font-family:ui-monospace,"SF Mono",Menlo,monospace;background:var(--code-bg);color:var(--accent);padding:1px 5px;border-radius:4px;font-size:.85em;}
+  pre{
+    background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;overflow-x:auto;margin:0;
+  }
+  pre code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.82rem;line-height:1.55;color:var(--code-text);white-space:pre;}
+  .kw{color:#c586c0;} .type{color:#4ec9b0;} .str{color:#ce9178;} .cmt{color:#6a9955;} .fn{color:#dcdcaa;}
+
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:24px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap" style="padding:0;">
+    <a class="back" href="./index.html">&larr; All guides</a>
+    <div class="row" style="justify-content:space-between;margin-top:6px;">
+      <div>
+        <h1>🤖 MCP & Agents Field Guide</h1>
+        <p>Not questions. Map first, then a brief + snippet per piece — enough to be aware, not exhaustive.</p>
+      </div>
+      <div style="text-align:right;">
+        <div class="stat" id="statText">0/11 marked understood</div>
+        <div class="progress-outer" style="margin-top:5px;"><div class="progress-inner" id="statBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="block-tabs">
+      <span class="block-tab active">Block 1 · From LLM call to MCP (breadth)</span>
+      <span class="block-tab soon">Block 2 · MCP internals (depth) — coming</span>
+      <span class="block-tab soon">Block 3 · Multi-agent systems (depth) — coming</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="birdseye">
+    <span class="label">Bird's eye — how it all fits together</span>
+    An LLM call alone is just text in, text out. An <b>agent</b> wraps that call in a loop — observe, decide, act, observe the result, repeat — and <b>tool calling</b> is how it actually DOES something instead of just describing what it would do. <b>RAG</b> is how it answers with information it wasn't trained on. <b>MCP</b> standardizes the tool-calling part: instead of every app writing custom glue to every tool, MCP gives one protocol any client can speak to any compliant server, so a Host app connects Clients to Servers that expose Tools, Resources, and Prompts over a shared wire format. Everything below is one piece of that chain.
+  </div>
+
+  <div id="components"></div>
+
+</div>
+
+<footer>Checkboxes are cached in this browser (localStorage) so you can see what you've already passed over.</footer>
+
+<script>
+const COMPONENTS = [
+  {
+    "id": "llm-basics",
+    "title": "LLM basics",
+    "desc": "Tokens are the actual unit of input/output — pricing and context limits are measured in them, not characters. Temperature controls how random the next-token choice is; near 0 is close to deterministic.",
+    "code": "messages = [\n    { role: <span class=\"str\">\"system\"</span>, content: <span class=\"str\">\"You are a helpful assistant.\"</span> },\n    { role: <span class=\"str\">\"user\"</span>, content: <span class=\"str\">\"Explain tokens.\"</span> }\n]\nresponse = llm.chat(messages, temperature = <span class=\"fn\">0.2</span>, max_tokens = <span class=\"fn\">500</span>)"
+  },
+  {
+    "id": "prompting",
+    "title": "Prompting",
+    "desc": "Few-shot shows example input/output pairs to pin down a format. Chain-of-thought asks the model to reason step by step before answering — improves accuracy on multi-step problems.",
+    "code": "prompt = <span class=\"str\">\"\"\"\nQ: 2 + 2 * 3?  A: Multiply first: 2*3=6, then add: 2+6=8.\nQ: 5 + 4 * 2?  A:\n\"\"\"</span>"
+  },
+  {
+    "id": "tool-calling",
+    "title": "Function / Tool calling",
+    "desc": "You describe available tools (name + JSON schema); the model can reply with a structured request to call one instead of plain text. Your code executes it and feeds the result back.",
+    "code": "tools = [{ name: <span class=\"str\">\"get_weather\"</span>, parameters: { city: <span class=\"str\">\"string\"</span> } }]\nresponse = llm.chat(messages, tools = tools)\n<span class=\"kw\">if</span> response.tool_call:\n    result = execute(response.tool_call)\n    messages.append({ role: <span class=\"str\">\"tool\"</span>, content: result })\n    response = llm.chat(messages, tools = tools)   <span class=\"cmt\">// continue the loop</span>"
+  },
+  {
+    "id": "rag",
+    "title": "RAG",
+    "desc": "Retrieval-Augmented Generation — embed the question, search a vector DB for the most relevant chunks, inject them into the prompt as context, then let the model answer grounded in that context.",
+    "code": "queryEmbedding = embed(question)\nchunks = vectorDb.search(queryEmbedding, topK = <span class=\"fn\">5</span>)\nprompt = <span class=\"str\">\"Context:\\n\"</span> + chunks.join(<span class=\"str\">\"\\n\"</span>) + <span class=\"str\">\"\\n\\nQuestion: \"</span> + question"
+  },
+  {
+    "id": "agent-loop",
+    "title": "Agent loop / ReAct",
+    "desc": "Observe → decide (maybe call a tool) → act → observe the result → repeat, until a goal or termination condition is met. ReAct interleaves explicit reasoning with each action, making the plan legible.",
+    "code": "<span class=\"kw\">while</span> (!done) {\n    thought = llm.think(state)\n    action = llm.decideAction(thought)\n    result = execute(action)\n    state = state.observe(result)\n    done = isGoalReached(state) || state.steps &gt; maxSteps\n}"
+  },
+  {
+    "id": "mcp-architecture",
+    "title": "MCP architecture",
+    "desc": "Host = the app you use (Claude Desktop, an IDE). It contains one or more Clients, each with a 1:1 connection to a Server that exposes tools, resources, and prompts.",
+    "code": "{\n  <span class=\"str\">\"mcpServers\"</span>: {\n    <span class=\"str\">\"filesystem\"</span>: { <span class=\"str\">\"command\"</span>: <span class=\"str\">\"npx\"</span>, <span class=\"str\">\"args\"</span>: [<span class=\"str\">\"-y\"</span>, <span class=\"str\">\"@mcp/server-filesystem\"</span>] }\n  }\n}"
+  },
+  {
+    "id": "mcp-primitives",
+    "title": "MCP primitives",
+    "desc": "Tools = callable functions (<code>tools/call</code>). Resources = readable data addressable by URI (<code>resources/read</code>). Prompts = reusable templates the server offers (<code>prompts/get</code>). All discovered dynamically at connect time.",
+    "code": "<span class=\"cmt\">// client asks the server what it offers</span>\nclient.listTools()      <span class=\"cmt\">// -> [{ name: \"search_files\", ... }]</span>\nclient.callTool(<span class=\"str\">\"search_files\"</span>, { query: <span class=\"str\">\"TODO\"</span> })"
+  },
+  {
+    "id": "mcp-transport",
+    "title": "MCP transport",
+    "desc": "MCP runs over JSON-RPC 2.0. STDIO — a local subprocess, simplest, used for local tools. SSE / Streamable HTTP — for remote servers over a network.",
+    "code": "{ <span class=\"str\">\"jsonrpc\"</span>: <span class=\"str\">\"2.0\"</span>, <span class=\"str\">\"id\"</span>: <span class=\"fn\">1</span>, <span class=\"str\">\"method\"</span>: <span class=\"str\">\"tools/call\"</span>,\n  <span class=\"str\">\"params\"</span>: { <span class=\"str\">\"name\"</span>: <span class=\"str\">\"search_files\"</span>, <span class=\"str\">\"arguments\"</span>: { <span class=\"str\">\"query\"</span>: <span class=\"str\">\"TODO\"</span> } } }"
+  },
+  {
+    "id": "multi-agent",
+    "title": "Multi-agent orchestration",
+    "desc": "Sequential (A's output feeds B), orchestrator-worker (a coordinator delegates and synthesizes), graph-based (explicit branches/loops), or peer/conversational (agents message each other directly).",
+    "code": "researchResult = researcherAgent.run(task)\ndraftResult = writerAgent.run(researchResult)\nfinalResult = editorAgent.run(draftResult)   <span class=\"cmt\">// sequential pipeline</span>"
+  },
+  {
+    "id": "memory",
+    "title": "Memory",
+    "desc": "Short-term = the conversation/scratchpad within one run. Long-term = an external store (vector DB, files) the agent reads and writes across sessions so it doesn't start from zero every time.",
+    "code": "shortTermMemory = conversationHistory   <span class=\"cmt\">// cleared each session</span>\nlongTermMemory.save(key = userId, fact = <span class=\"str\">\"prefers concise answers\"</span>)"
+  },
+  {
+    "id": "agent-security",
+    "title": "Agent security",
+    "desc": "Scope what a tool call is allowed to do (least privilege), sanitize/validate tool arguments before executing (the model's output is untrusted input), and require human approval for high-risk actions.",
+    "code": "<span class=\"kw\">if</span> action.risk == <span class=\"str\">\"high\"</span> && !humanApproved(action):\n    <span class=\"kw\">return</span> <span class=\"str\">\"Waiting for approval before executing: \"</span> + action.description\nvalidate(action.arguments)   <span class=\"cmt\">// never trust model output directly</span>\nexecute(action)"
+  }
+];
+
+const LS_KEY = 'mcp_agents_guide_done_v1';
+function loadDone(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e){ return {}; } }
+function saveDone(d){ localStorage.setItem(LS_KEY, JSON.stringify(d)); }
+
+function render(){
+  const done = loadDone();
+  const container = document.getElementById('components');
+  container.innerHTML = '';
+  COMPONENTS.forEach(c => {
+    const isDone = !!done[c.id];
+    const div = document.createElement('div');
+    div.className = 'component' + (isDone ? ' done' : '');
+    div.innerHTML = `
+      <div class="component-head">
+        <input type="checkbox" id="chk-${c.id}" ${isDone ? 'checked' : ''}>
+        <div style="flex:1;">
+          <h2>${c.title}</h2>
+          <p class="desc">${c.desc}</p>
+          <pre><code>${c.code}</code></pre>
+        </div>
+      </div>`;
+    div.querySelector('input').addEventListener('change', (e) => {
+      const d = loadDone();
+      if (e.target.checked) d[c.id] = true; else delete d[c.id];
+      saveDone(d);
+      render();
+    });
+    container.appendChild(div);
+  });
+
+  const doneCount = Object.keys(done).filter(id => COMPONENTS.find(c => c.id === id)).length;
+  document.getElementById('statText').textContent = doneCount + '/' + COMPONENTS.length + ' marked understood';
+  document.getElementById('statBar').style.width = (doneCount / COMPONENTS.length * 100) + '%';
+}
+render();
+</script>
+</body>
+</html>

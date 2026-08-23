@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Guides</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff; --done:#3ddc84;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  .wrap{max-width:760px;margin:0 auto;padding:60px 20px;}
+  h1{font-size:1.5rem;margin:0 0 8px;}
+  p.lead{color:var(--muted);margin:0 0 32px;line-height:1.55;font-size:.92rem;}
+  .card{
+    display:block;background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;margin-bottom:12px;text-decoration:none;color:inherit;transition:.15s;
+  }
+  .card:hover{border-color:var(--accent);}
+  .card-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .card h2{margin:0 0 4px;font-size:1.05rem;}
+  .card p{margin:0;color:var(--muted);font-size:.85rem;line-height:1.5;}
+  .stat{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.74rem;color:var(--muted);white-space:nowrap;}
+  footer{color:var(--muted);font-size:.78rem;margin-top:24px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📚 Field Guides</h1>
+  <p class="lead">Not Q&amp;A dumps. Each guide: a bird's-eye map of how the pieces fit together, then a brief explanation + real code snippet per piece. Block 1 in every guide is breadth — enough to be aware of everything. Deeper blocks come later, topic by topic.</p>
+
+  <a class="card" href="./android.html">
+    <div class="card-row">
+      <div>
+        <h2>📱 Android</h2>
+        <p>Activity/Fragment → ViewModel → Composable+State → Room/Retrofit → Hilt → WorkManager and the rest of the skeleton.</p>
+      </div>
+      <span class="stat" id="stat-android">—</span>
+    </div>
+  </a>
+
+  <a class="card" href="./kotlin.html">
+    <div class="card-row">
+      <div>
+        <h2>🎯 Kotlin</h2>
+        <p>Null safety, data/sealed classes, scope functions, coroutines, Flow, generics, delegation, and the rest of the language core.</p>
+      </div>
+      <span class="stat" id="stat-kotlin">—</span>
+    </div>
+  </a>
+
+  <a class="card" href="./dsa.html">
+    <div class="card-row">
+      <div>
+        <h2>🧩 DS &amp; Algo</h2>
+        <p>The ~12 patterns behind almost every interview problem — two pointers, sliding window, DP, heaps, tries, and more.</p>
+      </div>
+      <span class="stat" id="stat-dsa">—</span>
+    </div>
+  </a>
+
+  <a class="card" href="./system-design.html">
+    <div class="card-row">
+      <div>
+        <h2>🏗️ System Design</h2>
+        <p>The standard backend shape: load balancer, cache, CDN, replication/sharding, queues, rate limiting, circuit breakers, and more.</p>
+      </div>
+      <span class="stat" id="stat-sysdesign">—</span>
+    </div>
+  </a>
+
+  <a class="card" href="./mcp-agents.html">
+    <div class="card-row">
+      <div>
+        <h2>🤖 MCP &amp; Agents</h2>
+        <p>From a plain LLM call to tool calling, RAG, agent loops, and MCP's architecture, primitives, and transport.</p>
+      </div>
+      <span class="stat" id="stat-mcpagents">—</span>
+    </div>
+  </a>
+
+  <footer>Progress is cached per guide in this browser (localStorage) — the number on each card is how many components you've marked understood there.</footer>
+</div>
+
+<script>
+const GUIDES = [
+  { key: 'stat-android', lsKey: 'android_guide_done_v1', total: 12 },
+  { key: 'stat-kotlin', lsKey: 'kotlin_guide_done_v1', total: 12 },
+  { key: 'stat-dsa', lsKey: 'dsa_guide_done_v1', total: 12 },
+  { key: 'stat-sysdesign', lsKey: 'sysdesign_guide_done_v1', total: 14 },
+  { key: 'stat-mcpagents', lsKey: 'mcp_agents_guide_done_v1', total: 11 },
+];
+GUIDES.forEach(g => {
+  let done = {};
+  try { done = JSON.parse(localStorage.getItem(g.lsKey) || '{}'); } catch(e) {}
+  const count = Object.keys(done).length;
+  document.getElementById(g.key).textContent = count + '/' + g.total;
+});
+</script>
+</body>
+</html>

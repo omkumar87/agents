@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design Field Guide</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff; --done:#3ddc84;
+    --code-bg:#0b0d12; --code-text:#c9d6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  header{padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,17,21,.95);backdrop-filter:blur(6px);z-index:20;}
+  header h1{margin:0 0 4px;font-size:1.35rem;}
+  header p{margin:0;color:var(--muted);font-size:.88rem;}
+  header a.back{color:var(--muted);font-size:.78rem;text-decoration:none;}
+  header a.back:hover{color:var(--accent);}
+  .wrap{max-width:820px;margin:0 auto;padding:22px 18px 90px;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .block-tabs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .block-tab{
+    font-size:.78rem;font-weight:700;padding:7px 14px;border-radius:9px;border:1px solid var(--border);
+    background:var(--panel2);color:var(--muted);
+  }
+  .block-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .block-tab.soon{opacity:.5;}
+  .pill{font-size:.72rem;color:var(--muted);}
+  .progress-outer{background:var(--code-bg);border-radius:99px;height:7px;overflow:hidden;border:1px solid var(--border);width:140px;}
+  .progress-inner{height:100%;background:var(--done);}
+  .stat{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.76rem;color:var(--muted);}
+
+  .birdseye{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:20px 22px;margin:22px 0 30px;font-size:.95rem;line-height:1.7;color:#dbe0ea;
+  }
+  .birdseye b{color:var(--accent);}
+  .birdseye .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;display:block;}
+
+  .component{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;margin-bottom:14px;
+  }
+  .component.done{opacity:.55;}
+  .component-head{display:flex;align-items:flex-start;gap:12px;}
+  .component input[type=checkbox]{width:19px;height:19px;margin-top:2px;accent-color:var(--done);cursor:pointer;flex-shrink:0;}
+  .component h2{margin:0 0 6px;font-size:1.05rem;}
+  .component .desc{margin:0 0 12px;font-size:.87rem;line-height:1.6;color:var(--muted);}
+  .component .desc b{color:var(--text);font-weight:600;}
+  .component .desc code{font-family:ui-monospace,"SF Mono",Menlo,monospace;background:var(--code-bg);color:var(--accent);padding:1px 5px;border-radius:4px;font-size:.85em;}
+  pre{
+    background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;overflow-x:auto;margin:0;
+  }
+  pre code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.82rem;line-height:1.55;color:var(--code-text);white-space:pre;}
+  .kw{color:#c586c0;} .type{color:#4ec9b0;} .str{color:#ce9178;} .cmt{color:#6a9955;} .fn{color:#dcdcaa;}
+
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:24px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap" style="padding:0;">
+    <a class="back" href="./index.html">&larr; All guides</a>
+    <div class="row" style="justify-content:space-between;margin-top:6px;">
+      <div>
+        <h1>🏗️ System Design Field Guide</h1>
+        <p>Not questions. Map first, then a brief + snippet per piece — enough to be aware, not exhaustive.</p>
+      </div>
+      <div style="text-align:right;">
+        <div class="stat" id="statText">0/14 marked understood</div>
+        <div class="progress-outer" style="margin-top:5px;"><div class="progress-inner" id="statBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="block-tabs">
+      <span class="block-tab active">Block 1 · The Standard Shape (breadth)</span>
+      <span class="block-tab soon">Block 2 · Data layer deep dive (depth) — coming</span>
+      <span class="block-tab soon">Block 3 · Case studies (depth) — coming</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="birdseye">
+    <span class="label">Bird's eye — how it all fits together</span>
+    Almost every backend has roughly the same shape: a client talks to a <b>load balancer</b> (behind an <b>API gateway</b>), which spreads traffic across stateless service instances; a <b>cache</b> sits in front of the database to absorb repeat reads, with a <b>CDN</b> doing the same for static content at the edge; the database itself is <b>replicated</b> and sometimes <b>sharded</b> for durability and write scale; a <b>message queue</b> decouples anything that doesn't need an instant answer; and the whole thing is protected by <b>rate limiting</b>, <b>circuit breakers</b>, and <b>retries with backoff</b>, then watched by <b>logs/metrics/traces</b> so you know when it breaks. Everything below is one piece of that shape.
+  </div>
+
+  <div id="components"></div>
+
+</div>
+
+<footer>Checkboxes are cached in this browser (localStorage) so you can see what you've already passed over.</footer>
+
+<script>
+const COMPONENTS = [
+  {
+    "id": "load-balancer",
+    "title": "Load Balancer",
+    "desc": "Spreads incoming requests across identical backend instances — round robin (simple), least connections (adapts to load), or consistent hashing (routes the same key to the same instance, good for caches).",
+    "code": "<span class=\"kw\">if</span> algorithm == <span class=\"str\">\"round_robin\"</span>:\n    server = servers[requestCount % servers.size]\n<span class=\"kw\">elif</span> algorithm == <span class=\"str\">\"least_connections\"</span>:\n    server = servers.minBy { it.activeConnections }"
+  },
+  {
+    "id": "caching",
+    "title": "Caching (cache-aside)",
+    "desc": "Check the cache first; on a miss, read the DB and populate the cache. Simplest pattern, but it can go stale if the DB is written elsewhere without an explicit invalidation.",
+    "code": "value = cache.get(key)\n<span class=\"kw\">if</span> value == null:\n    value = db.query(key)\n    cache.set(key, value, ttl = <span class=\"fn\">300</span>)\n<span class=\"kw\">return</span> value"
+  },
+  {
+    "id": "cdn",
+    "title": "CDN",
+    "desc": "A network of edge servers caching content geographically close to users — cuts latency by avoiding a round trip to the origin server for anything that doesn't change per-request.",
+    "code": "Cache-Control: public, max-age=3600\n<span class=\"cmt\"># CDN edge nodes serve this response for 1 hour without hitting origin</span>"
+  },
+  {
+    "id": "replication-sharding",
+    "title": "DB replication & sharding",
+    "desc": "Replication = full copies of the same data on multiple nodes (durability, read scaling). Sharding = splitting different rows across different databases entirely (write scaling).",
+    "code": "<span class=\"cmt\"># replication: read from any replica, write only to the primary</span>\nreplica.read(query)\nprimary.write(query)\n\n<span class=\"cmt\"># sharding: route by a key</span>\nshard = shards[hash(userId) % shards.size]"
+  },
+  {
+    "id": "message-queue",
+    "title": "Message Queue / Pub-Sub",
+    "desc": "Decouples producer and consumer — the producer doesn't wait for the consumer, and the queue absorbs traffic spikes instead of dropping requests.",
+    "code": "queue.publish(topic = <span class=\"str\">\"order.created\"</span>, payload = order)\n\n<span class=\"cmt\">// consumer, running independently:</span>\nqueue.subscribe(topic = <span class=\"str\">\"order.created\"</span>) { order -> processOrder(order) }"
+  },
+  {
+    "id": "rate-limiting",
+    "title": "Rate limiting (token bucket)",
+    "desc": "A bucket refills at a steady rate and holds up to N tokens; each request costs one token. Allows bursts up to bucket size, then throttles.",
+    "code": "<span class=\"kw\">if</span> bucket.tokens &gt; <span class=\"fn\">0</span>:\n    bucket.tokens -= <span class=\"fn\">1</span>\n    allowRequest()\n<span class=\"kw\">else</span>:\n    reject(<span class=\"fn\">429</span>, retryAfter = bucket.refillTime)"
+  },
+  {
+    "id": "circuit-breaker",
+    "title": "Circuit breaker",
+    "desc": "After too many failures calling a downstream service, \"open\" the breaker and fail fast for a cooldown period instead of hammering a service that's already struggling.",
+    "code": "<span class=\"kw\">if</span> breaker.state == OPEN:\n    <span class=\"kw\">if</span> now() &gt; breaker.cooldownUntil: breaker.state = HALF_OPEN\n    <span class=\"kw\">else</span>: throw FastFailException()\n\nresult = callDownstream()   <span class=\"cmt\">// failure here reopens the breaker</span>"
+  },
+  {
+    "id": "retries-backoff",
+    "title": "Retries + exponential backoff",
+    "desc": "Retry a failed call, but double the delay each time (plus jitter) so retries don't all slam a recovering service at once.",
+    "code": "<span class=\"kw\">for</span> (attempt <span class=\"kw\">in</span> <span class=\"fn\">1</span>..maxRetries) {\n    <span class=\"kw\">try</span> { <span class=\"kw\">return</span> call() }\n    <span class=\"kw\">catch</span> (e: <span class=\"type\">Exception</span>) {\n        <span class=\"kw\">val</span> delay = baseDelay * <span class=\"fn\">2.0</span>.pow(attempt) + randomJitter()\n        sleep(delay)\n    }\n}"
+  },
+  {
+    "id": "cap-theorem",
+    "title": "CAP theorem",
+    "desc": "Under a network partition, you must choose Consistency (every read sees the latest write) or Availability (every request gets a response) — you can't have both during that partition.",
+    "code": "<span class=\"cmt\"># during a partition:</span>\n<span class=\"kw\">if</span> prioritizeConsistency: rejectRequestUntilPartitionHeals()\n<span class=\"kw\">else</span>: servePossiblyStaleData()"
+  },
+  {
+    "id": "idempotency",
+    "title": "Idempotency",
+    "desc": "A request that has the same effect no matter how many times it's retried — essential when a client can't tell whether a request actually succeeded before retrying.",
+    "code": "POST /payments\nIdempotency-Key: abc-123\n\n<span class=\"kw\">if</span> seenKeys.contains(<span class=\"str\">\"abc-123\"</span>): <span class=\"kw\">return</span> cachedResponse\n<span class=\"kw\">else</span>: process() and cache the response under that key"
+  },
+  {
+    "id": "service-discovery",
+    "title": "Service discovery",
+    "desc": "How a service finds the current network address of another service, since instances come and go with autoscaling and deploys. Client-side (ask a registry) or server-side (a load balancer does the lookup for you).",
+    "code": "instances = registry.lookup(<span class=\"str\">\"payment-service\"</span>)\ntarget = instances.random()"
+  },
+  {
+    "id": "observability",
+    "title": "Observability",
+    "desc": "Logs (what happened, in detail, for one event), metrics (aggregate trends over time), traces (where did time go across a multi-service request) — three different questions, three different tools.",
+    "code": "logger.info(<span class=\"str\">\"order created\"</span>, orderId = order.id)\nmetrics.increment(<span class=\"str\">\"orders.created\"</span>)\ntracer.startSpan(<span class=\"str\">\"processOrder\"</span>, parentSpan = currentSpan)"
+  },
+  {
+    "id": "distributed-locks",
+    "title": "Distributed locks",
+    "desc": "A lock stored in a shared system (Redis, ZooKeeper) so multiple service instances don't step on the same resource at once. Needs a TTL and a fencing token — a lock that outlives its holder is a real bug.",
+    "code": "lock = redis.set(key, ownerId, NX = <span class=\"kw\">true</span>, EX = <span class=\"fn\">30</span>)   <span class=\"cmt\">// only sets if not already locked</span>\n<span class=\"kw\">if</span> lock:\n    <span class=\"kw\">try</span> { doWork() } <span class=\"kw\">finally</span> { redis.delWithOwnerCheck(key, ownerId) }"
+  },
+  {
+    "id": "api-gateway",
+    "title": "API Gateway / Reverse proxy",
+    "desc": "One entry point in front of many services — handles auth, rate limiting, and routing, and can aggregate multiple backend calls into one client-facing response.",
+    "code": "gateway.route(<span class=\"str\">\"/api/orders/*\"</span>) -> orderService\ngateway.route(<span class=\"str\">\"/api/users/*\"</span>) -> userService\ngateway.applyMiddleware(authCheck, rateLimiter)"
+  }
+];
+
+const LS_KEY = 'sysdesign_guide_done_v1';
+function loadDone(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e){ return {}; } }
+function saveDone(d){ localStorage.setItem(LS_KEY, JSON.stringify(d)); }
+
+function render(){
+  const done = loadDone();
+  const container = document.getElementById('components');
+  container.innerHTML = '';
+  COMPONENTS.forEach(c => {
+    const isDone = !!done[c.id];
+    const div = document.createElement('div');
+    div.className = 'component' + (isDone ? ' done' : '');
+    div.innerHTML = `
+      <div class="component-head">
+        <input type="checkbox" id="chk-${c.id}" ${isDone ? 'checked' : ''}>
+        <div style="flex:1;">
+          <h2>${c.title}</h2>
+          <p class="desc">${c.desc}</p>
+          <pre><code>${c.code}</code></pre>
+        </div>
+      </div>`;
+    div.querySelector('input').addEventListener('change', (e) => {
+      const d = loadDone();
+      if (e.target.checked) d[c.id] = true; else delete d[c.id];
+      saveDone(d);
+      render();
+    });
+    container.appendChild(div);
+  });
+
+  const doneCount = Object.keys(done).filter(id => COMPONENTS.find(c => c.id === id)).length;
+  document.getElementById('statText').textContent = doneCount + '/' + COMPONENTS.length + ' marked understood';
+  document.getElementById('statBar').style.width = (doneCount / COMPONENTS.length * 100) + '%';
+}
+render();
+</script>
+</body>
+</html>
