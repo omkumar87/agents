@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Android Field Guide</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#5b8cff; --done:#3ddc84;
+    --code-bg:#0b0d12; --code-text:#c9d6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  header{padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,17,21,.95);backdrop-filter:blur(6px);z-index:20;}
+  header h1{margin:0 0 4px;font-size:1.35rem;}
+  header p{margin:0;color:var(--muted);font-size:.88rem;}
+  .wrap{max-width:820px;margin:0 auto;padding:22px 18px 90px;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .block-tabs{display:flex;gap:8px;margin-top:12px;}
+  .block-tab{
+    font-size:.78rem;font-weight:700;padding:7px 14px;border-radius:9px;border:1px solid var(--border);
+    background:var(--panel2);color:var(--muted);
+  }
+  .block-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .block-tab.soon{opacity:.5;}
+  .pill{font-size:.72rem;color:var(--muted);}
+  .progress-outer{background:var(--code-bg);border-radius:99px;height:7px;overflow:hidden;border:1px solid var(--border);width:140px;}
+  .progress-inner{height:100%;background:var(--done);}
+  .stat{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.76rem;color:var(--muted);}
+
+  .birdseye{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:20px 22px;margin:22px 0 30px;font-size:.95rem;line-height:1.7;color:#dbe0ea;
+  }
+  .birdseye b{color:var(--accent);}
+  .birdseye .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;display:block;}
+
+  .component{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;margin-bottom:14px;
+  }
+  .component.done{opacity:.55;}
+  .component-head{display:flex;align-items:flex-start;gap:12px;}
+  .component input[type=checkbox]{width:19px;height:19px;margin-top:2px;accent-color:var(--done);cursor:pointer;flex-shrink:0;}
+  .component h2{margin:0 0 6px;font-size:1.05rem;}
+  .component .desc{margin:0 0 12px;font-size:.87rem;line-height:1.6;color:var(--muted);}
+  .component .desc b{color:var(--text);font-weight:600;}
+  .component .desc code{font-family:ui-monospace,"SF Mono",Menlo,monospace;background:var(--code-bg);color:var(--accent);padding:1px 5px;border-radius:4px;font-size:.85em;}
+  pre{
+    background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;overflow-x:auto;margin:0;
+  }
+  pre code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.82rem;line-height:1.55;color:var(--code-text);white-space:pre;}
+  .kw{color:#c586c0;} .type{color:#4ec9b0;} .str{color:#ce9178;} .cmt{color:#6a9955;} .fn{color:#dcdcaa;}
+
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:24px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap" style="padding:0;">
+    <div class="row" style="justify-content:space-between;">
+      <div>
+        <h1>📱 Android Field Guide</h1>
+        <p>Not questions. Map first, then a brief + code snippet per piece — enough to be aware, not exhaustive.</p>
+      </div>
+      <div style="text-align:right;">
+        <div class="stat" id="statText">0/12 marked understood</div>
+        <div class="progress-outer" style="margin-top:5px;"><div class="progress-inner" id="statBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="block-tabs">
+      <span class="block-tab active">Block 1 · The Skeleton (breadth)</span>
+      <span class="block-tab soon">Block 2 · Compose &amp; State (depth) — coming</span>
+      <span class="block-tab soon">Block 3 · Data &amp; Background work (depth) — coming</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="birdseye">
+    <span class="label">Bird's eye — how it all fits together</span>
+    An <b>Activity</b> or <b>Fragment</b> hosts the screen. Its UI is built from <b>Composables</b>, which read <b>State</b> that lives in a <b>ViewModel</b> — the ViewModel survives rotation, the Composable doesn't. The ViewModel asks a <b>Repository</b> for data; the Repository pulls from <b>Room</b> (local DB) and <b>Retrofit</b> (network) and hands everything back as a <b>Flow</b>. <b>Hilt</b> constructs and wires all of these objects together so nothing constructs its own dependencies. <b>WorkManager</b> and <b>Services</b> handle work that has to keep running after the screen is gone. <b>Broadcast receivers</b> and <b>permissions</b> are how the app listens to, and asks things of, the OS itself. That's the whole skeleton — every card below is one bone of it.
+  </div>
+
+  <div id="components"></div>
+
+</div>
+
+<footer>Checkboxes are cached in this browser (localStorage) so you can see what you've already passed over.</footer>
+
+<script>
+const COMPONENTS = [
+{
+  id: 'activity-fragment',
+  title: 'Activity / Fragment',
+  desc: 'You know this one. One update for the modern era: they\'re just the <b>shell</b> now. A modern screen\'s Activity hosts a <code>NavHost</code> and gets out of the way — almost no logic lives in it anymore.',
+  code: `<span class="kw">class</span> <span class="type">MainActivity</span> : <span class="type">ComponentActivity</span>() {
+    <span class="kw">override fun</span> <span class="fn">onCreate</span>(savedInstanceState: <span class="type">Bundle</span>?) {
+        <span class="kw">super</span>.onCreate(savedInstanceState)
+        setContent { <span class="type">AppNavHost</span>() }  <span class="cmt">// everything else lives in Compose</span>
+    }
+}`
+},
+{
+  id: 'viewmodel',
+  title: 'ViewModel',
+  desc: 'Survives configuration changes (rotation) by living in a <code>ViewModelStore</code> tied to the Activity, not the View hierarchy that gets destroyed and rebuilt on every rotation.',
+  code: `<span class="kw">class</span> <span class="type">ProfileViewModel</span>(<span class="kw">private val</span> repo: <span class="type">ProfileRepository</span>) : <span class="type">ViewModel</span>() {
+    <span class="kw">private val</span> _state = <span class="type">MutableStateFlow</span>(<span class="type">ProfileUiState</span>())
+    <span class="kw">val</span> state: <span class="type">StateFlow</span>&lt;<span class="type">ProfileUiState</span>&gt; = _state.asStateFlow()
+
+    <span class="kw">fun</span> <span class="fn">load</span>(userId: <span class="type">String</span>) = viewModelScope.launch {
+        _state.update { it.copy(user = repo.getUser(userId)) }
+    }
+}`
+},
+{
+  id: 'composable-state',
+  title: 'Composable + State',
+  desc: 'A Composable is a function that describes UI from data. It re-runs ("recomposes") only for the parts whose input actually changed — not the whole screen.',
+  code: `<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">ProfileScreen</span>(vm: <span class="type">ProfileViewModel</span> = hiltViewModel()) {
+    <span class="kw">val</span> state <span class="kw">by</span> vm.state.collectAsStateWithLifecycle()
+    <span class="type">Text</span>(text = state.user?.name ?: <span class="str">"Loading…"</span>)
+}`
+},
+{
+  id: 'room',
+  title: 'Room',
+  desc: 'A compile-time-checked wrapper over SQLite. You write an interface describing the queries you want; Room generates the SQL and the boilerplate behind it.',
+  code: `<span class="kw">@Dao</span>
+<span class="kw">interface</span> <span class="type">UserDao</span> {
+    <span class="kw">@Query</span>(<span class="str">"SELECT * FROM users WHERE id = :id"</span>)
+    <span class="kw">fun</span> <span class="fn">observeUser</span>(id: <span class="type">String</span>): <span class="type">Flow</span>&lt;<span class="type">User</span>&gt;
+}`
+},
+{
+  id: 'retrofit',
+  title: 'Retrofit + OkHttp',
+  desc: 'Retrofit turns an HTTP API into a plain Kotlin interface. OkHttp is the real client underneath actually making the network calls.',
+  code: `<span class="kw">interface</span> <span class="type">ApiService</span> {
+    <span class="kw">@GET</span>(<span class="str">"users/{id}"</span>)
+    <span class="kw">suspend fun</span> <span class="fn">getUser</span>(<span class="kw">@Path</span>(<span class="str">"id"</span>) id: <span class="type">String</span>): <span class="type">UserDto</span>
+}`
+},
+{
+  id: 'repository',
+  title: 'Repository',
+  desc: 'The one class that decides "did this data come from Room or from Retrofit" — so the ViewModel never has to know or care which.',
+  code: `<span class="kw">class</span> <span class="type">ProfileRepository</span>(
+    <span class="kw">private val</span> api: <span class="type">ApiService</span>,
+    <span class="kw">private val</span> dao: <span class="type">UserDao</span>
+) {
+    <span class="kw">suspend fun</span> <span class="fn">getUser</span>(id: <span class="type">String</span>): <span class="type">User</span> {
+        <span class="kw">val</span> fresh = api.getUser(id)
+        dao.upsert(fresh.toEntity())
+        <span class="kw">return</span> fresh.toDomain()
+    }
+}`
+},
+{
+  id: 'hilt',
+  title: 'Hilt',
+  desc: 'Annotate a constructor, and Hilt builds the object and hands it to whoever asks — you never write <code>ProfileRepository(api, dao)</code> by hand.',
+  code: `<span class="kw">class</span> <span class="type">ProfileRepository</span> <span class="kw">@Inject constructor</span>(
+    <span class="kw">private val</span> api: <span class="type">ApiService</span>,
+    <span class="kw">private val</span> dao: <span class="type">UserDao</span>
+)`
+},
+{
+  id: 'workmanager',
+  title: 'WorkManager',
+  desc: 'For work that must finish even if the user closes the app — uploads, sync. Survives process death, and respects constraints like "only run on Wi-Fi."',
+  code: `<span class="kw">val</span> request = <span class="type">OneTimeWorkRequestBuilder</span>&lt;<span class="type">UploadWorker</span>&gt;()
+    .setConstraints(
+        <span class="type">Constraints</span>.Builder()
+            .setRequiredNetworkType(<span class="type">NetworkType</span>.UNMETERED)
+            .build()
+    )
+    .build()
+
+<span class="type">WorkManager</span>.getInstance(context).enqueue(request)`
+},
+{
+  id: 'services',
+  title: 'Services — Foreground vs. background',
+  desc: '<b>Foreground</b> = a user-visible ongoing task (music playback) — requires a persistent notification. Plain background execution is heavily restricted since Android 8, which is exactly why WorkManager exists instead of a raw background Service.',
+  code: `<span class="kw">class</span> <span class="type">PlaybackService</span> : <span class="type">Service</span>() {
+    <span class="kw">override fun</span> <span class="fn">onStartCommand</span>(intent: <span class="type">Intent</span>?, flags: <span class="type">Int</span>, id: <span class="type">Int</span>): <span class="type">Int</span> {
+        startForeground(NOTIF_ID, buildNotification())
+        <span class="kw">return</span> <span class="type">START_STICKY</span>
+    }
+}`
+},
+{
+  id: 'broadcast',
+  title: 'Broadcast receivers',
+  desc: 'How the app hears system-wide events it didn\'t ask for directly — battery low, network changed, another app finished an action.',
+  code: `<span class="kw">val</span> receiver = <span class="kw">object</span> : <span class="type">BroadcastReceiver</span>() {
+    <span class="kw">override fun</span> <span class="fn">onReceive</span>(context: <span class="type">Context</span>, intent: <span class="type">Intent</span>) {
+        <span class="cmt">// network changed</span>
+    }
+}
+context.registerReceiver(receiver, <span class="type">IntentFilter</span>(<span class="type">ConnectivityManager</span>.CONNECTIVITY_ACTION))`
+},
+{
+  id: 'permissions',
+  title: 'Permissions',
+  desc: 'Requested at runtime, not just declared in the manifest — the user can say no, and can revoke a previously-granted permission later.',
+  code: `<span class="kw">val</span> launcher = registerForActivityResult(
+    <span class="type">ActivityResultContracts</span>.RequestPermission()
+) { granted -> <span class="cmt">/* handle result */</span> }
+
+launcher.launch(<span class="type">Manifest</span>.permission.POST_NOTIFICATIONS)`
+},
+{
+  id: 'navigation',
+  title: 'Navigation (Compose)',
+  desc: 'A single Activity hosts a <code>NavHost</code> that swaps Composable screens in and out — replacing the old multi-Activity, Fragment-transaction way of moving between screens.',
+  code: `<span class="type">NavHost</span>(navController, startDestination = <span class="str">"profile"</span>) {
+    composable(<span class="str">"profile"</span>) { <span class="type">ProfileScreen</span>() }
+    composable(<span class="str">"settings"</span>) { <span class="type">SettingsScreen</span>() }
+}`
+},
+];
+
+const LS_KEY = 'android_guide_done_v1';
+function loadDone(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e){ return {}; } }
+function saveDone(d){ localStorage.setItem(LS_KEY, JSON.stringify(d)); }
+
+function render(){
+  const done = loadDone();
+  const container = document.getElementById('components');
+  container.innerHTML = '';
+  COMPONENTS.forEach(c => {
+    const isDone = !!done[c.id];
+    const div = document.createElement('div');
+    div.className = 'component' + (isDone ? ' done' : '');
+    div.innerHTML = `
+      <div class="component-head">
+        <input type="checkbox" id="chk-${c.id}" ${isDone ? 'checked' : ''}>
+        <div style="flex:1;">
+          <h2>${c.title}</h2>
+          <p class="desc">${c.desc}</p>
+          <pre><code>${c.code}</code></pre>
+        </div>
+      </div>`;
+    div.querySelector('input').addEventListener('change', (e) => {
+      const d = loadDone();
+      if (e.target.checked) d[c.id] = true; else delete d[c.id];
+      saveDone(d);
+      render();
+    });
+    container.appendChild(div);
+  });
+
+  const doneCount = Object.keys(done).filter(id => COMPONENTS.find(c => c.id === id)).length;
+  document.getElementById('statText').textContent = doneCount + '/' + COMPONENTS.length + ' marked understood';
+  document.getElementById('statBar').style.width = (doneCount / COMPONENTS.length * 100) + '%';
+}
+render();
+</script>
+</body>
+</html>
